@@ -5,7 +5,8 @@
       <map>
         <entry key="app/src/main/res/layout/activity_authentication.xml" value="0.24682971014492755" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19518585205078132" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.24682971014492755" />
+        <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.203125" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login2.xml" value="0.24682971014492755" />
       </map>
     </option>
