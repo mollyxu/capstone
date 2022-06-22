@@ -41,4 +41,14 @@ public class AuthenticationActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    public void replaceLoginFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.authentication, SignupFragment.class, null)
+                .setReorderingAllowed(true)
+                .addToBackStack("name") // name can be null
+                .commit();
+
+    }
 }

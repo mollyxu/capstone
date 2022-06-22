@@ -2,6 +2,7 @@ package com.example.capstone;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.android.gms.auth.api.Auth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,13 +34,12 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
 
+
     //
-    private EditText etUsername;
-    private EditText etPassword;
-    private Button btnLogin;
+//    private EditText etUsername;
+//    private EditText etPassword;
+//    private Button btnLogin;
     private Button btnSignup;
-
-
 
 
     public LoginFragment() {
@@ -63,7 +65,30 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        btnSignup = getActivity().findViewById(R.id.btn_signup);
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick signup button");
+                ((AuthenticationActivity)getActivity()).replaceLoginFragment();
+//                String username = etUsername.getText().toString();
+//                String password = etPassword.getText().toString();
+//                loginUser(username, password);
+            }
+        });
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -71,27 +96,12 @@ public class LoginFragment extends Fragment {
         }
 
 
-        etUsername = getView().findViewById(R.id.et_username);
-        etPassword = getView().findViewById(R.id.et_password);
-        btnLogin = getView().findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "onClick login button");
-//                String username = etUsername.getText().toString();
-//                String password = etPassword.getText().toString();
-//                loginUser(username, password);
+//        etUsername = getView().findViewById(R.id.et_username);
+//        etPassword = getView().findViewById(R.id.et_password);
+//        btnLogin = getView().findViewById(R.id.btn_login);
 
-            }
-        });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
-    }
 
 
 }
