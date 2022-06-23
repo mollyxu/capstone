@@ -16,12 +16,12 @@
         app:srcCompat="@drawable/placeholder_image" />
 
     <EditText
-        android:id="@+id/et_username"
+        android:id="@+id/et_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="username" />
+        android:hint="email" />
 
     <EditText
         android:id="@+id/et_password"

@@ -81,7 +81,7 @@ public class SignupFragment extends Fragment {
         }
 
 
-// Initialize Firebase Auth
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
     }
 
