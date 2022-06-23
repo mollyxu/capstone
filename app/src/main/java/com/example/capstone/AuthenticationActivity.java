@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
+import com.google.firebase.FirebaseApp;
+
 //public class AuthenticationActivity extends AppCompatActivity {
 //
 //    FragmentManager fragmentManager = getSupportFragmentManager();

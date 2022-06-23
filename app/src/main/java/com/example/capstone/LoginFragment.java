@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.gms.auth.api.Auth;
 
 /**
  * A simple {@link Fragment} subclass.
