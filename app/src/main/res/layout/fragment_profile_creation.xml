@@ -6,37 +6,29 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:orientation="vertical"
-    tools:context=".SignupFragment">
+    tools:context=".ProfileCreationFragment">
 
     <ImageView
-        android:id="@+id/logo_signup"
+        android:id="@+id/iv_profile_picture"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:srcCompat="@drawable/placeholder_image" />
+        tools:src="@tools:sample/avatars" />
 
     <EditText
-        android:id="@+id/et_signup_email"
+        android:id="@+id/et_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="enter your email here" />
-
-    <EditText
-        android:id="@+id/et_signup_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="enter your password here"
-        android:inputType="textPassword" />
+        android:hint="username" />
 
     <Button
-        android:id="@+id/btn_signup_user"
+        android:id="@+id/btn_complete_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Signup"
+        android:text="Complete Profile"
         android:textColor="@color/white"/>
+
 </LinearLayout>

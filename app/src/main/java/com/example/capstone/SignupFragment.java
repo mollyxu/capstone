@@ -142,7 +142,15 @@ public class SignupFragment extends Fragment {
                 Log.i(TAG, "onClick signup button");
                 String email = etSignupEmail.getText().toString();
                 String password = etSignupPassword.getText().toString();
-                createAccount(email, password);
+
+                if (email.matches("") || password.matches("")) {
+                    Toast.makeText(getActivity(), "Please enter your email and password.", Toast.LENGTH_SHORT).show();
+                } else {
+                    createAccount(email, password);
+
+                    // profile creation
+                    ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, ProfileCreationFragment.class);
+                }
             }
         });
     }

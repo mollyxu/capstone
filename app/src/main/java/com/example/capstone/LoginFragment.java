@@ -94,7 +94,12 @@ public class LoginFragment extends Fragment {
                 Log.i(TAG, "onClick login button");
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                signIn(email, password);
+
+                if (email.matches("") || password.matches("")) {
+                    Toast.makeText(getActivity(), "Please enter your email and password.", Toast.LENGTH_SHORT).show();
+                } else {
+                    signIn(email, password);
+                }
             }
         });
 
@@ -103,7 +108,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick signup button");
-                ((AuthenticationActivity)getActivity()).replaceLoginFragment();
+                ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, SignupFragment.class);
             }
         });
     }

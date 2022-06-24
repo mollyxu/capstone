@@ -1,5 +1,7 @@
 package com.example.capstone;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -44,13 +46,12 @@ public class AuthenticationActivity extends AppCompatActivity {
         }
     }
 
-    public void replaceLoginFragment(){
+    public void replaceFragment(@IdRes int containerViewId, @NonNull Class<? extends androidx.fragment.app.Fragment> fragmentClass){
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.authentication, SignupFragment.class, null)
+                .replace(containerViewId, fragmentClass, null)
                 .setReorderingAllowed(true)
                 .addToBackStack("name") // name can be null
                 .commit();
-
     }
 }
