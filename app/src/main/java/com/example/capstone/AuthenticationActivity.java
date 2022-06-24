@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.firebase.FirebaseApp;
 
 //public class AuthenticationActivity extends AppCompatActivity {
@@ -28,12 +31,15 @@ import com.google.firebase.FirebaseApp;
 //}
 
 public class AuthenticationActivity extends AppCompatActivity {
+
+
     public AuthenticationActivity() {
         super(R.layout.activity_authentication);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_authentication);
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
