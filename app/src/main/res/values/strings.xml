@@ -11,4 +11,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="facebook_app_id">323694723311539</string>
+    <string name="fb_login_protocol_scheme">fb323694723311539</string>
+    <string name="facebook_client_token">79131b82a7a30025efec85840c0dbc08</string>
 </resources>
