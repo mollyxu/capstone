@@ -20,17 +20,15 @@ public class HomescreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
 
-        Button btnStartSession = findViewById(R.id.btn_start_session);
+        if (savedInstanceState == null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("some_int", 0);
 
-
-        btnStartSession.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "onClick start session button");
-                replaceFragment(R.id.homescreen, StartSessionFragment.class);
-
-            }
-        });
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.homescreen, HomeFragment.class, bundle)
+                    .commit();
+        }
     }
 
     public void replaceFragment(@IdRes int containerViewId, @NonNull Class<? extends androidx.fragment.app.Fragment> fragmentClass){
