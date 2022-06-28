@@ -12,22 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class HomeFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-
-
     private static final String TAG = "HomeFragment";
 
     Button btnJoinSession;
     Button btnStartSession;
 
-
     public HomeFragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         return fragment;

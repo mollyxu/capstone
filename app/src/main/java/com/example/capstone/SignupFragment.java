@@ -26,7 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 import org.w3c.dom.Text;
 
 public class SignupFragment extends Fragment {
-    // added content here
     private static final String TAG = "SignupFragment";
     private FirebaseAuth mAuth;
 
@@ -34,9 +33,7 @@ public class SignupFragment extends Fragment {
     private EditText etSignupEmail;
     private EditText etSignupPassword;
 
-    public SignupFragment() {
-        // Required empty public constructor
-    }
+    public SignupFragment() {}
 
     public static SignupFragment newInstance(String param1, String param2) {
         SignupFragment fragment = new SignupFragment();
@@ -51,7 +48,6 @@ public class SignupFragment extends Fragment {
     }
 
     private void createAccount(String email, String password) {
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -62,14 +58,12 @@ public class SignupFragment extends Fragment {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
                 });
-        // [END create_user_with_email]
     }
 
     @Override
@@ -84,14 +78,11 @@ public class SignupFragment extends Fragment {
 
     private void reload() { }
 
-    private void updateUI(FirebaseUser user) {
-
-    }
+    private void updateUI(FirebaseUser user) {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_signup, container, false);
     }
 
@@ -111,8 +102,6 @@ public class SignupFragment extends Fragment {
                     Toast.makeText(getActivity(), "Please enter your email and password.", Toast.LENGTH_SHORT).show();
                 } else {
                     createAccount(email, password);
-
-                    // profile creation
                     ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, ProfileCreationFragment.class);
                 }
             }

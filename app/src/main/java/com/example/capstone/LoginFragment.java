@@ -29,15 +29,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment {
-
-    // added content here
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginFragment";
 
@@ -46,9 +38,7 @@ public class LoginFragment extends Fragment {
     private Button btnLogin;
     private Button btnSignup;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() {}
 
     public static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
@@ -58,7 +48,6 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -69,29 +58,8 @@ public class LoginFragment extends Fragment {
         btnLogin = getView().findViewById(R.id.btn_login);
         btnSignup = getActivity().findViewById(R.id.btn_signup);
 
-        // Initialize Facebook Login button
-        CallbackManager mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = getActivity().findViewById(R.id.btn_facebook_login);
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
+        initializeFacebookLogin();
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-            }
-        });
-
-        // login user
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,11 +75,11 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        // swap to signup fragment
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick signup button");
+                // swap to signup fragment
                 ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, SignupFragment.class);
             }
         });
@@ -137,12 +105,9 @@ public class LoginFragment extends Fragment {
 
     private void reload() { }
 
-    private void updateUI(FirebaseUser user) {
-
-    }
+    private void updateUI(FirebaseUser user) {}
 
     private void signIn(String email, String password) {
-        // [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -157,7 +122,6 @@ public class LoginFragment extends Fragment {
                             Intent home = new Intent(getActivity(), HomescreenActivity.class);
                             startActivity(home);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -165,7 +129,29 @@ public class LoginFragment extends Fragment {
                         }
                     }
                 });
-        // [END sign_in_with_email]
+    }
+
+    public void initializeFacebookLogin() {
+        LoginButton loginButton = getActivity().findViewById(R.id.btn_facebook_login);
+        CallbackManager mCallbackManager = CallbackManager.Factory.create();
+        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+            }
+        });
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -186,7 +172,6 @@ public class LoginFragment extends Fragment {
                             Intent home = new Intent(getActivity(), HomescreenActivity.class);
                             startActivity(home);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
