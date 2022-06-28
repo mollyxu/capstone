@@ -21,12 +21,9 @@ public class HomescreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_homescreen);
 
         if (savedInstanceState == null) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("some_int", 0);
-
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.homescreen, HomeFragment.class, bundle)
+                    .add(R.id.homescreen, HomeFragment.class, null)
                     .commit();
         }
     }
@@ -36,7 +33,7 @@ public class HomescreenActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(containerViewId, fragmentClass, null)
                 .setReorderingAllowed(true)
-                .addToBackStack("name") // name can be null
+                .addToBackStack(null)
                 .commit();
     }
 
