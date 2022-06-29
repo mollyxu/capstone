@@ -28,6 +28,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 public class LoginFragment extends Fragment {
     private FirebaseAuth mAuth;
@@ -166,6 +169,34 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            // update parse db
+                            User registeredUser = new User();
+                            String firebase_uid = user.getUid();
+
+                            // check if user already exists
+                            ParseQuery<User> query = ParseQuery.getQuery(User.class);
+                            query.include(User.KEY_FIREBASE_UID);
+                            query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
+                            try {
+                                int account = query.count();
+                                if (account == 0) {
+                                    registeredUser.setFirebaseUid(user.getUid());
+                                    registeredUser.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            if (e != null){
+                                                Log.e(TAG, "Error while saving", e);
+                                                Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.i(TAG, "Registration was successful!");
+                                        }
+                                    });
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
                             updateUI(user);
 
                             // TODO: comeback later to cleanup updateUI

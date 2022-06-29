@@ -61,7 +61,7 @@ public class SignupFragment extends Fragment {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            // update post db
+                            // update parse db
                             User registeredUser = new User();
                             registeredUser.setFirebaseUid(user.getUid());
                             registeredUser.saveInBackground(new SaveCallback() {
