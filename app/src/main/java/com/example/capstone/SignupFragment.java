@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.SaveCallback;
 
 import org.w3c.dom.Text;
 
@@ -53,9 +57,24 @@ public class SignupFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            // update post db
+                            User registeredUser = new User();
+                            registeredUser.setFirebaseUid(user.getUid());
+                            registeredUser.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null){
+                                        Log.e(TAG, "Error while saving", e);
+                                        Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    Log.i(TAG, "Registration was successful!");
+                                }
+                            });
+
                             updateUI(user);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
