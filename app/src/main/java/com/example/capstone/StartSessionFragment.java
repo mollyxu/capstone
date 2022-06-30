@@ -14,6 +14,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.SaveCallback;
+
 public class StartSessionFragment extends Fragment {
     private static final String TAG = "StartSessionFragment";
 
@@ -58,6 +61,35 @@ public class StartSessionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
+
+                Number numParticipants = Integer.parseInt(etStartSessionNumParticipants.getText().toString());
+                String location = etStartSessionLocation.getText().toString();
+                String startTime = etStartSessionStartTime.getText().toString();
+                String endTime = etStartSessionEndTime.getText().toString();
+                String subjects = etStartSessionSubjects.getText().toString();
+                Number studyPreference = Integer.parseInt(etStartSessionStudyPreference.getText().toString());
+                Boolean openSession = checkBoxOtherSubjects.isChecked();
+
+                // update parse db
+                StudySession studySession = new StudySession();
+                studySession.setNumParticipants(numParticipants);
+                studySession.setLocation(location);
+                studySession.setStartTime(startTime);
+                studySession.setEndTime(endTime);
+                studySession.setSubjects(subjects);
+                studySession.setStudyPreference(studyPreference);
+                studySession.setOpenSession(openSession);
+
+                studySession.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null){
+                            Log.e(TAG, "Error while saving", e);
+                            Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                        }
+                        Log.i(TAG, "New study session was created successfully!");
+                    }
+                });
             }
         });
     }

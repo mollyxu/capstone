@@ -60,10 +60,10 @@ public class ProfileCreationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick complete profile button");
-                String full_name = etFullName.getText().toString();
+                String fullName = etFullName.getText().toString();
                 String school = etSchool.getText().toString();
 
-                if (full_name.matches("")) {
+                if (fullName.matches("")) {
                     Toast.makeText(getActivity(), "Please enter your full name.", Toast.LENGTH_SHORT).show();
                 } else {
                     FirebaseUser user = mAuth.getCurrentUser();
@@ -74,7 +74,7 @@ public class ProfileCreationFragment extends Fragment {
                     query.getFirstInBackground(new GetCallback<User>() {
                         public void done(User user, ParseException e) {
                             if (e == null) {
-                                user.put("full_name",full_name);
+                                user.put("full_name",fullName);
                                 user.put("school", school);
                                 user.saveInBackground(new SaveCallback() {
                                     @Override
