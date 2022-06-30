@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.parse.GetCallback;
@@ -29,6 +31,7 @@ public class ProfileCreationFragment extends Fragment {
 
     private EditText etFullName;
     private EditText etSchool;
+    private ImageView ivProfilePicture;
     private Button btnCompleteProfile;
 
     public ProfileCreationFragment() {}
@@ -54,7 +57,12 @@ public class ProfileCreationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         etFullName = getActivity().findViewById(R.id.et_full_name);
         etSchool = getActivity().findViewById(R.id.et_school);
+        ivProfilePicture = getActivity().findViewById(R.id.iv_profile_picture);
+
         btnCompleteProfile = getActivity().findViewById(R.id.btn_complete_profile);
+
+        // add more logic here later
+        Glide.with(getActivity()).load(R.drawable.placeholder_image).into(ivProfilePicture);
 
         btnCompleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
