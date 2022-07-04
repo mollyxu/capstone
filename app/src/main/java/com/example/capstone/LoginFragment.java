@@ -194,7 +194,6 @@ public class LoginFragment extends Fragment {
                                     });
                                     ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, ProfileCreationFragment.class);
                                 } else {
-                                    // ADD if else
                                     // TODO: comeback later to cleanup updateUI
                                     Intent home = new Intent(getActivity(), HomescreenActivity.class);
                                     startActivity(home);
