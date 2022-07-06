@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 
 public class HomescreenActivity extends AppCompatActivity {
-
     private static final String TAG = "HomescreenActivity";
 
     @Override
@@ -36,6 +35,4 @@ public class HomescreenActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
-
-
 }

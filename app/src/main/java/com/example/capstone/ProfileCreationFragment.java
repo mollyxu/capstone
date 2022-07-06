@@ -1,18 +1,37 @@
 package com.example.capstone;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.parse.GetCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 public class ProfileCreationFragment extends Fragment {
+    private static final String TAG = "ProfileCreationFragment";
+    private FirebaseAuth mAuth;
 
-    public ProfileCreationFragment() {
-        // Required empty public constructor
-    }
+    private EditText etFullName;
+    private EditText etSchool;
+    private Button btnCompleteProfile;
+
+    public ProfileCreationFragment() {}
 
     public static ProfileCreationFragment newInstance(String param1, String param2) {
         ProfileCreationFragment fragment = new ProfileCreationFragment();
@@ -22,12 +41,62 @@ public class ProfileCreationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile_creation, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        etFullName = getActivity().findViewById(R.id.et_full_name);
+        etSchool = getActivity().findViewById(R.id.et_school);
+        btnCompleteProfile = getActivity().findViewById(R.id.btn_complete_profile);
+
+        btnCompleteProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick complete profile button");
+                String full_name = etFullName.getText().toString();
+                String school = etSchool.getText().toString();
+
+                if (full_name.matches("")) {
+                    Toast.makeText(getActivity(), "Please enter your full name.", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    String firebase_uid = user.getUid();
+                    ParseQuery<User> query = ParseQuery.getQuery(User.class);
+                    query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
+
+                    query.getFirstInBackground(new GetCallback<User>() {
+                        public void done(User user, ParseException e) {
+                            if (e == null) {
+                                user.put("full_name",full_name);
+                                user.put("school", school);
+                                user.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null) {
+                                            Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Failed to Save", Toast.LENGTH_SHORT).show();
+                                            Log.d(getClass().getSimpleName(), "User update error: " + e);
+                                        }
+                                    }
+                                });
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                    Intent home = new Intent(getActivity(), HomescreenActivity.class);
+                    startActivity(home);
+                }
+            }
+        });
     }
 }
