@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.android:facebook-applinks:14.1.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/5068d74f5096d56113dd53a05ed34034/transformed/facebook-applinks-14.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/5068d74f5096d56113dd53a05ed34034/transformed/facebook-applinks-14.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/5068d74f5096d56113dd53a05ed34034/transformed/facebook-applinks-14.1.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.android/facebook-applinks/14.1.0/5bb990b626e3975c01d1ea6d32d7eb349d29d75/facebook-applinks-14.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.android/facebook-applinks/14.1.0/f656a588877f13dbd746f0effd5263b7720d5395/facebook-applinks-14.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
