@@ -1,7 +1,9 @@
 package com.example.capstone;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,11 +29,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class ProfileCreationFragment extends Fragment {
     public final static int PICK_PHOTO_CODE = 1046;
@@ -42,7 +53,7 @@ public class ProfileCreationFragment extends Fragment {
     private ImageView ivProfilePicture;
     private Button btnCompleteProfile;
 
-    private String profilePictureUrl;
+    private byte[] profilePictureByteArr;
 
     public ProfileCreationFragment() {}
 
@@ -86,7 +97,6 @@ public class ProfileCreationFragment extends Fragment {
                 Log.i(TAG, "onClick complete profile button");
                 String fullName = etFullName.getText().toString();
                 String school = etSchool.getText().toString();
-                String profilePicture = profilePictureUrl;
 
                 if (fullName.matches("")) {
                     Toast.makeText(getActivity(), "Please enter your full name.", Toast.LENGTH_SHORT).show();
@@ -104,7 +114,8 @@ public class ProfileCreationFragment extends Fragment {
                                 if (!school.matches("")){
                                     user.put("school", school);
                                 }
-                                if (profilePicture != null) {
+                                if (profilePictureByteArr != null) {
+                                    ParseFile profilePicture = new ParseFile("profile_pic", profilePictureByteArr);
                                     user.put("profile_picture", profilePicture);
                                 }
                                 user.saveInBackground(new SaveCallback() {
@@ -154,15 +165,20 @@ public class ProfileCreationFragment extends Fragment {
         return image;
     }
 
+    private static byte[] bitmapToByteArr(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((data != null) && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
-            // Load the image located at photoUri into selectedImage
             Bitmap selectedImage = loadFromUri(photoUri);
-            profilePictureUrl = photoUri.toString();
-            ImageView ivPreview = (ImageView) getActivity().findViewById(R.id.iv_profile_picture);
-            ivPreview.setImageBitmap(selectedImage);
+            ivProfilePicture.setImageBitmap(selectedImage);
+            profilePictureByteArr = bitmapToByteArr(selectedImage);
         }
     }
 }
