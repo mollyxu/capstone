@@ -14,10 +14,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
 public class StartSessionFragment extends Fragment {
+    private FirebaseAuth mAuth;
+
     private static final String TAG = "StartSessionFragment";
 
     private EditText etStartSessionNumParticipants;
@@ -39,6 +43,7 @@ public class StartSessionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -61,35 +66,42 @@ public class StartSessionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
+                updateDatabase();
+            }
+        });
+    }
 
-                Number numParticipants = Integer.parseInt(etStartSessionNumParticipants.getText().toString());
-                String location = etStartSessionLocation.getText().toString();
-                String startTime = etStartSessionStartTime.getText().toString();
-                String endTime = etStartSessionEndTime.getText().toString();
-                String subjects = etStartSessionSubjects.getText().toString();
-                Number studyPreference = Integer.parseInt(etStartSessionStudyPreference.getText().toString());
-                Boolean openSession = checkBoxOtherSubjects.isChecked();
+    public void updateDatabase(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        String firebase_uid = user.getUid();
 
-                // update parse db
-                StudySession studySession = new StudySession();
-                studySession.setNumParticipants(numParticipants);
-                studySession.setLocation(location);
-                studySession.setStartTime(startTime);
-                studySession.setEndTime(endTime);
-                studySession.setSubjects(subjects);
-                studySession.setStudyPreference(studyPreference);
-                studySession.setOpenSession(openSession);
+        Number numParticipants = Integer.parseInt(etStartSessionNumParticipants.getText().toString());
+        String location = etStartSessionLocation.getText().toString();
+        String startTime = etStartSessionStartTime.getText().toString();
+        String endTime = etStartSessionEndTime.getText().toString();
+        String subjects = etStartSessionSubjects.getText().toString();
+        Number studyPreference = Integer.parseInt(etStartSessionStudyPreference.getText().toString());
+        Boolean openSession = checkBoxOtherSubjects.isChecked();
 
-                studySession.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null){
-                            Log.e(TAG, "Error while saving", e);
-                            Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                        }
-                        Log.i(TAG, "New study session was created successfully!");
-                    }
-                });
+        // update parse db
+        StudySession studySession = new StudySession();
+        studySession.setNumParticipants(numParticipants);
+        studySession.setLocation(location);
+        studySession.setStartTime(startTime);
+        studySession.setEndTime(endTime);
+        studySession.setSubjects(subjects);
+        studySession.setStudyPreference(studyPreference);
+        studySession.setOpenSession(openSession);
+        studySession.setOrganizerId(firebase_uid);
+
+        studySession.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                }
+                Log.i(TAG, "New study session was created successfully!");
             }
         });
     }

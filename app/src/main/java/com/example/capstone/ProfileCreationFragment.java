@@ -110,7 +110,6 @@ public class ProfileCreationFragment extends Fragment {
                         public void done(User user, ParseException e) {
                             if (e == null) {
                                 user.put("full_name",fullName);
-                                user.put("organizer_id", firebase_uid);
                                 if (!school.matches("")){
                                     user.put("school", school);
                                 }
