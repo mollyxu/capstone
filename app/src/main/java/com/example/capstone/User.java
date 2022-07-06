@@ -14,12 +14,12 @@ public class User extends ParseObject {
     public String getFirebaseUid(){
         return getString(KEY_FIREBASE_UID);
     }
-    public void setFirebaseUid(String firebase_uid){
-        put(KEY_FIREBASE_UID, firebase_uid);
+    public void setFirebaseUid(String firebaseUid){
+        put(KEY_FIREBASE_UID, firebaseUid);
     }
 
     public String getFullName() { return getString(KEY_FULL_NAME); }
-    public void setFullName(String firebase_uid){
-        put(KEY_FIREBASE_UID, firebase_uid);
+    public void setFullName(String fullName){
+        put(KEY_FIREBASE_UID, fullName);
     }
 }
