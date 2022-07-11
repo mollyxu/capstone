@@ -62,7 +62,6 @@ public class StartSessionLogisticsFragment extends Fragment {
                 updateDatabase();
                 Intent map = new Intent(getActivity(), StartSessionMapActivity.class);
                 startActivity(map);
-//                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, StartSessionMapFragment.class);
             }
         });
     }

@@ -26,10 +26,6 @@ import com.parse.ParseException;
 import com.parse.SaveCallback;
 
 public class StartSessionMapFragment extends Fragment {
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
-
-
     private FirebaseAuth mAuth;
 
     private static final String TAG = "StartSessionMapFragment";
@@ -54,40 +50,27 @@ public class StartSessionMapFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start_session_map, container, false);
 
-        // Initialize map fragment
         SupportMapFragment supportMapFragment=(SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.google_map);
 
-        // Async map
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                // When map is loaded
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
-                        // When clicked on map
-                        // Initialize marker options
                         MarkerOptions markerOptions=new MarkerOptions();
-                        // Set position of marker
                         markerOptions.position(latLng);
-                        // Set title of marker
                         markerOptions.title(latLng.latitude+" : "+latLng.longitude);
-                        // Remove all marker
                         googleMap.clear();
-                        // Animating to zoom the marker
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
-                        // Add marker on map
                         googleMap.addMarker(markerOptions);
                     }
                 });
 
             }
         });
-        // Return view
         return view;
-
-
     }
 
     @Override
