@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -59,7 +60,9 @@ public class StartSessionLogisticsFragment extends Fragment {
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
                 updateDatabase();
-                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, StartSessionMapFragment.class);
+                Intent map = new Intent(getActivity(), StartSessionMapActivity.class);
+                startActivity(map);
+//                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, StartSessionMapFragment.class);
             }
         });
     }

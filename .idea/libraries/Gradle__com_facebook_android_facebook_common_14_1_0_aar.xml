@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.facebook.android:facebook-common:14.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/86751bdb5b5d3b93e5a35f0c3735992c/transformed/facebook-common-14.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/86751bdb5b5d3b93e5a35f0c3735992c/transformed/facebook-common-14.1.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/86751bdb5b5d3b93e5a35f0c3735992c/transformed/facebook-common-14.1.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/c2ecc8b108a5f7601f33ba91ecd234e8/transformed/facebook-common-14.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/c2ecc8b108a5f7601f33ba91ecd234e8/transformed/facebook-common-14.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/c2ecc8b108a5f7601f33ba91ecd234e8/transformed/facebook-common-14.1.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.android/facebook-common/14.1.0/e899cb97da75848b94840bba5bd7ffec8315d9ab/facebook-common-14.1.0-javadoc.jar!/" />
