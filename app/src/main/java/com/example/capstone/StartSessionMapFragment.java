@@ -32,10 +32,15 @@ public class StartSessionMapFragment extends Fragment {
 
     private Button btnStartPreferences;
 
+    private String studySessionId;
+
     public StartSessionMapFragment() {}
 
-    public static StartSessionMapFragment newInstance() {
+    public static StartSessionMapFragment newInstance(String studySessionId) {
         StartSessionMapFragment fragment = new StartSessionMapFragment();
+        Bundle args = new Bundle();
+        args.putString("studySessionId", studySessionId);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -43,6 +48,10 @@ public class StartSessionMapFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        if (getArguments() != null) {
+            studySessionId = getArguments().getString("studySessionId");
+            Log.i(TAG, "check if arguments: " + studySessionId);
+        }
     }
 
     @Override
@@ -81,7 +90,10 @@ public class StartSessionMapFragment extends Fragment {
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
                 updateDatabase();
-                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, StartSessionPreferencesFragment.class);
+                Log.i(TAG, "studySessionId: " + studySessionId);
+                StartSessionPreferencesFragment startSessionPreferencesFragment = StartSessionPreferencesFragment.newInstance(studySessionId);
+
+                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionPreferencesFragment);
             }
         });
     }

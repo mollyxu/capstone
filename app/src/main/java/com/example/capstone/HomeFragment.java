@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         return fragment;
     }
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 Log.i(TAG, "onClick start session button");
                 // changes here
-                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, StartSessionLogisticsFragment.class);
+                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, StartSessionLogisticsFragment.newInstance(""));
             }
         });
 

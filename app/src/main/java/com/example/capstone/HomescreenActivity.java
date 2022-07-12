@@ -3,6 +3,7 @@ package com.example.capstone;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
@@ -27,10 +28,10 @@ public class HomescreenActivity extends AppCompatActivity {
         }
     }
 
-    public void replaceFragment(@IdRes int containerViewId, @NonNull Class<? extends androidx.fragment.app.Fragment> fragmentClass){
+    public void replaceFragment(@IdRes int containerViewId, @NonNull Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(containerViewId, fragmentClass, null)
+                .replace(containerViewId, fragment)
                 .setReorderingAllowed(true)
                 .addToBackStack(null)
                 .commit();

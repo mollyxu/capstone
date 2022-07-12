@@ -30,10 +30,15 @@ public class StartSessionLogisticsFragment extends Fragment {
     private EditText etStartSessionEndTime;
     private Button btnStartMap;
 
+    private String studySessionId;
+
     public StartSessionLogisticsFragment() {}
 
-    public static StartSessionLogisticsFragment newInstance() {
+    public static StartSessionLogisticsFragment newInstance(String studySessionId) {
         StartSessionLogisticsFragment fragment = new StartSessionLogisticsFragment();
+        Bundle args = new Bundle();
+        args.putString("studySessionId", studySessionId);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -60,8 +65,9 @@ public class StartSessionLogisticsFragment extends Fragment {
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
                 updateDatabase();
-                Intent map = new Intent(getActivity(), StartSessionMapActivity.class);
-                startActivity(map);
+
+//                Intent map = new Intent(getActivity(), StartSessionMapActivity.class);
+//                startActivity(map);
             }
         });
     }
@@ -80,6 +86,11 @@ public class StartSessionLogisticsFragment extends Fragment {
         studySession.setStartTime(startTime);
         studySession.setEndTime(endTime);
 
+        // placeholder
+        studySession.setSubjects("fdsafds");
+        studySession.setStudyPreference(1);
+        studySession.setOpenSession(false);
+
         studySession.setOrganizerId(firebase_uid);
 
         studySession.saveInBackground(new SaveCallback() {
@@ -89,7 +100,11 @@ public class StartSessionLogisticsFragment extends Fragment {
                     Log.e(TAG, "Error while saving", e);
                     Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
                 }
+                studySessionId = studySession.getObjectId();
+                Log.i(TAG, "objectId: " + studySessionId);
                 Log.i(TAG, "New study session was created successfully!");
+                StartSessionMapFragment startSessionMapFragment = StartSessionMapFragment.newInstance(studySessionId);
+                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionMapFragment);
             }
         });
     }

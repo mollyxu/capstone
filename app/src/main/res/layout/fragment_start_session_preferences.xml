@@ -15,15 +15,16 @@
         android:layout_weight="1"
         android:ems="10"
         android:hint="Subjects" />
-
-    <EditText
-        android:id="@+id/et_start_session_study_preference"
+    <Spinner
+        android:id="@+id/spinner_start_session_study_preference"
+        android:layout_height="50dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Study preference"
-        android:inputType="number"/>
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <CheckBox
         android:id="@+id/check_box_other_subjects"
