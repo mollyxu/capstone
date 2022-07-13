@@ -47,8 +47,22 @@ public class SignupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void saveParseUser(FirebaseUser firebaseUser){
+        User parseUser = new User();
+        parseUser.setFirebaseUid(firebaseUser.getUid());
+        parseUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                }
+                Log.i(TAG, "Registration was successful!");
+            }
+        });
     }
 
     private void createAccount(String email, String password) {
@@ -57,25 +71,10 @@ public class SignupFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            // update parse db
-                            User registeredUser = new User();
-                            registeredUser.setFirebaseUid(user.getUid());
-                            registeredUser.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e != null){
-                                        Log.e(TAG, "Error while saving", e);
-                                        Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    Log.i(TAG, "Registration was successful!");
-                                }
-                            });
-
-                            updateUI(user);
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            saveParseUser(firebaseUser);
+                            updateUI(firebaseUser);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_SHORT).show();
