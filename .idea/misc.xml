@@ -7,7 +7,7 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_authentication.xml" value="0.24682971014492755" />
-        <entry key="app/src/main/res/layout/activity_homescreen.xml" value="0.11687403853221603" />
+        <entry key="app/src/main/res/layout/activity_homescreen.xml" value="0.16867152388377857" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19518585205078132" />
         <entry key="app/src/main/res/layout/activity_start_session_map.xml" value="0.1458966565349544" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.203125" />
@@ -17,6 +17,7 @@
         <entry key="app/src/main/res/layout/fragment_profile_creation.xml" value="0.21580458931300953" />
         <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.26268115942028986" />
         <entry key="app/src/main/res/layout/fragment_start_session.xml" value="0.32545882515285335" />
+        <entry key="app/src/main/res/layout/fragment_start_session_google_map.xml" value="0.13703140830800406" />
         <entry key="app/src/main/res/layout/fragment_start_session_logistics.xml" value="0.2994791666666667" />
         <entry key="app/src/main/res/layout/fragment_start_session_map.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_start_session_preferences.xml" value="0.31354166666666666" />
