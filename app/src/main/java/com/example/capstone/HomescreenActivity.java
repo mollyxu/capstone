@@ -22,6 +22,12 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 public class HomescreenActivity extends AppCompatActivity
         implements
@@ -29,6 +35,8 @@ public class HomescreenActivity extends AppCompatActivity
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback{
+    private FirebaseAuth mAuth;
+
     private static final String TAG = "HomescreenActivity";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -36,10 +44,14 @@ public class HomescreenActivity extends AppCompatActivity
 
     private GoogleMap map;
 
+    private StudySession draftStudySession;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
+
+        mAuth = FirebaseAuth.getInstance();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -124,5 +136,30 @@ public class HomescreenActivity extends AppCompatActivity
 
     public void prepareMap(SupportMapFragment supportMapFragment){
         supportMapFragment.getMapAsync(this);
+    }
+
+    public StudySession getDraftStudySession(){
+        if (draftStudySession == null) {
+            FirebaseUser user = mAuth.getCurrentUser();
+            String firebase_uid = user.getUid();
+            draftStudySession = new StudySession();
+            draftStudySession.setOrganizerId(firebase_uid);
+        }
+        return draftStudySession;
+    }
+
+    public void saveDraftStudySession(NavigationProvider navigationProvider){
+        draftStudySession.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(getApplicationContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                draftStudySession = null;
+                navigationProvider.navigate();
+            }
+        });
     }
 }

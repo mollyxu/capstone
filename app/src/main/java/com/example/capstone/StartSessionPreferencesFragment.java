@@ -25,7 +25,7 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
-public class StartSessionPreferencesFragment extends Fragment {
+public class StartSessionPreferencesFragment extends Fragment implements NavigationProvider{
     private FirebaseAuth mAuth;
 
     private String studySessionId;
@@ -71,13 +71,22 @@ public class StartSessionPreferencesFragment extends Fragment {
         etStartSessionSubjects = getActivity().findViewById(R.id.et_start_session_subjects);
         checkBoxOtherSubjects = getActivity().findViewById(R.id.check_box_other_subjects);
         btnConfirmSession = ((HomescreenActivity)getActivity()).findViewById(R.id.btn_confirm_session);
+        StartSessionPreferencesFragment thisFragment = this;
         btnConfirmSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
-                updateDatabase();
 
-                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, HomeFragment.newInstance());
+                String subjects = etStartSessionSubjects.getText().toString();
+                int studyPreference = studyPreferenceStringtoInt(studyPreferenceSelected);
+                Boolean openSession = checkBoxOtherSubjects.isChecked();
+
+                if (!isInputValid(subjects, studyPreference, openSession)){
+                    Toast.makeText(getActivity(), "Please fill in your information correctly", Toast.LENGTH_SHORT).show();
+                }
+                updateDraftStudySession(subjects, studyPreference, openSession);
+                getHomescreenActivity().saveDraftStudySession(thisFragment);
+                navigate();
             }
         });
 
@@ -111,7 +120,6 @@ public class StartSessionPreferencesFragment extends Fragment {
 
             }
         });
-
     }
 
     public int studyPreferenceStringtoInt(String studyPreference){
@@ -126,45 +134,26 @@ public class StartSessionPreferencesFragment extends Fragment {
         } else {
             return 5;
         }
-
     }
 
-    public void updateDatabase(){
-        String subjects = etStartSessionSubjects.getText().toString();
-        Number studyPreference = studyPreferenceStringtoInt(studyPreferenceSelected);
-        Boolean openSession = checkBoxOtherSubjects.isChecked();
+    public boolean isInputValid(String subjects, int studyPreference, Boolean openSession){
+        return !subjects.matches("") && studyPreference >= 1 && studyPreference <= 5 && openSession != null;
+    }
 
-        Log.i(TAG, "objectId: " + studySessionId);
+    public void updateDraftStudySession(String subjects, Number studyPreference, Boolean openSession){
+        StudySession draftStudySession = getHomescreenActivity().getDraftStudySession();
 
-        if (subjects.matches("")) {
-            Toast.makeText(getActivity(), "Please enter your full name.", Toast.LENGTH_SHORT).show();
-        } else {
-            ParseQuery<StudySession> query = ParseQuery.getQuery(StudySession.class);
-            query.whereEqualTo(StudySession.KEY_OBJECT_ID, studySessionId);
+        draftStudySession.setSubjects(subjects);
+        draftStudySession.setStudyPreference(studyPreference);
+        draftStudySession.setOpenSession(openSession);
+    }
 
-            query.getFirstInBackground(new GetCallback<StudySession>() {
-                public void done(StudySession studySession, ParseException e) {
-                    if (e == null) {
-                        studySession.put("subjects",subjects);
-                        studySession.put("study_preference", studyPreference);
-                        studySession.put("open_session", openSession);
+    private HomescreenActivity getHomescreenActivity(){
+        return ((HomescreenActivity) getActivity());
+    }
 
-                        studySession.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getActivity(), "Failed to Save", Toast.LENGTH_SHORT).show();
-                                    Log.d(getClass().getSimpleName(), "User update error: " + e);
-                                }
-                            }
-                        });
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
+    @Override
+    public void navigate() {
+         getHomescreenActivity().replaceFragment(R.id.homescreen, HomeFragment.newInstance());
     }
 }

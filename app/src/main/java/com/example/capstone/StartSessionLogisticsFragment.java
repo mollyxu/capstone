@@ -21,8 +21,6 @@ import com.parse.ParseException;
 import com.parse.SaveCallback;
 
 public class StartSessionLogisticsFragment extends Fragment {
-    private FirebaseAuth mAuth;
-
     private static final String TAG = "StartSessionLogisticsFragment";
 
     private EditText etStartSessionNumParticipants;
@@ -45,7 +43,6 @@ public class StartSessionLogisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -64,45 +61,27 @@ public class StartSessionLogisticsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
-                updateDatabase();
+                updateDraftStudySession();
+                navigateToNextFragment();
             }
         });
     }
 
-    public void updateDatabase(){
-        FirebaseUser user = mAuth.getCurrentUser();
-        String firebase_uid = user.getUid();
-
+    public void updateDraftStudySession(){
         Number numParticipants = Integer.parseInt(etStartSessionNumParticipants.getText().toString());
         String startTime = etStartSessionStartTime.getText().toString();
         String endTime = etStartSessionEndTime.getText().toString();
 
-        // update parse db
-        StudySession studySession = new StudySession();
-        studySession.setNumParticipants(numParticipants);
-        studySession.setStartTime(startTime);
-        studySession.setEndTime(endTime);
+        StudySession draftStudySession = ((HomescreenActivity) getActivity()).getDraftStudySession();
 
-        // placeholder
-        studySession.setSubjects("fdsafds");
-        studySession.setStudyPreference(1);
-        studySession.setOpenSession(false);
 
-        studySession.setOrganizerId(firebase_uid);
+        draftStudySession.setNumParticipants(numParticipants);
+        draftStudySession.setStartTime(startTime);
+        draftStudySession.setEndTime(endTime);
+    }
 
-        studySession.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null){
-                    Log.e(TAG, "Error while saving", e);
-                    Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                }
-                studySessionId = studySession.getObjectId();
-                Log.i(TAG, "objectId: " + studySessionId);
-                Log.i(TAG, "New study session was created successfully!");
-                StartSessionMapFragment startSessionMapFragment = StartSessionMapFragment.newInstance(studySessionId);
-                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionMapFragment);
-            }
-        });
+    private void navigateToNextFragment(){
+        StartSessionMapFragment startSessionMapFragment = StartSessionMapFragment.newInstance(studySessionId);
+        ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionMapFragment);
     }
 }
