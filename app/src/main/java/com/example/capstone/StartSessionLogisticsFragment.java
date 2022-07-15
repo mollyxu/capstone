@@ -59,15 +59,12 @@ public class StartSessionLogisticsFragment extends Fragment {
         etStartSessionNumParticipants = getActivity().findViewById(R.id.et_start_session_num_participants);
         etStartSessionStartTime = getActivity().findViewById(R.id.et_start_session_start_time);
         etStartSessionEndTime = getActivity().findViewById(R.id.et_start_session_end_time);
-        btnStartMap = ((HomescreenActivity)getActivity()).findViewById(R.id.btn_start_map);
+        btnStartMap = getActivity().findViewById(R.id.btn_start_map);
         btnStartMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
                 updateDatabase();
-
-//                Intent map = new Intent(getActivity(), StartSessionMapActivity.class);
-//                startActivity(map);
             }
         });
     }

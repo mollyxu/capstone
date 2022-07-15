@@ -21,9 +21,6 @@
         android:theme="@style/Theme.Capstone"
         tools:targetApi="31">
         <activity
-            android:name=".StartSessionMapActivity"
-            android:exported="false" />
-        <activity
             android:name=".HomescreenActivity"
             android:exported="false" />
 

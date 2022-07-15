@@ -47,10 +47,6 @@ public class HomescreenActivity extends AppCompatActivity
                     .add(R.id.homescreen, HomeFragment.class, null)
                     .commit();
         }
-
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.google_map);
-//        mapFragment.getMapAsync(this);
     }
 
     public void replaceFragment(@IdRes int containerViewId, @NonNull Fragment fragment){
@@ -124,5 +120,9 @@ public class HomescreenActivity extends AppCompatActivity
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    public void prepareMap(SupportMapFragment supportMapFragment){
+        supportMapFragment.getMapAsync(this);
     }
 }

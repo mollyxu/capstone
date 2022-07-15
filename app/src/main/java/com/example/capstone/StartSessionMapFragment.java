@@ -58,41 +58,27 @@ public class StartSessionMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start_session_map, container, false);
-
-        SupportMapFragment supportMapFragment=(SupportMapFragment)
-                getChildFragmentManager().findFragmentById(R.id.google_map);
-
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        MarkerOptions markerOptions=new MarkerOptions();
-                        markerOptions.position(latLng);
-                        markerOptions.title(latLng.latitude+" : "+latLng.longitude);
-                        googleMap.clear();
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
-                        googleMap.addMarker(markerOptions);
-                    }
-                });
-
-            }
-        });
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         btnStartPreferences = getActivity().findViewById(R.id.btn_start_preferences);
+
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+
+        ((HomescreenActivity) getActivity()).prepareMap(mapFragment);
+
         btnStartPreferences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
                 updateDatabase();
                 Log.i(TAG, "studySessionId: " + studySessionId);
-                StartSessionPreferencesFragment startSessionPreferencesFragment = StartSessionPreferencesFragment.newInstance(studySessionId);
 
+                StartSessionPreferencesFragment startSessionPreferencesFragment = StartSessionPreferencesFragment.newInstance(studySessionId);
                 ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionPreferencesFragment);
             }
         });
