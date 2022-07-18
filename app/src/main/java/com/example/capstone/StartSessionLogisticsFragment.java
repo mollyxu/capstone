@@ -74,7 +74,6 @@ public class StartSessionLogisticsFragment extends Fragment {
 
         StudySession draftStudySession = ((HomescreenActivity) getActivity()).getDraftStudySession();
 
-
         draftStudySession.setNumParticipants(numParticipants);
         draftStudySession.setStartTime(startTime);
         draftStudySession.setEndTime(endTime);

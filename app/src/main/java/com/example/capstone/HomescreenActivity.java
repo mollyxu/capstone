@@ -12,6 +12,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +20,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.parse.GetCallback;
@@ -29,22 +35,31 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import com.google.android.gms.maps.model.LatLng;
+
+
 public class HomescreenActivity extends AppCompatActivity
         implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback,
-        ActivityCompat.OnRequestPermissionsResultCallback{
+        ActivityCompat.OnRequestPermissionsResultCallback {
     private FirebaseAuth mAuth;
+    private FusedLocationProviderClient fusedLocationClient;
 
     private static final String TAG = "HomescreenActivity";
+    private static final int TILE_SIZE = 256;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
 
     private GoogleMap map;
 
+
     private StudySession draftStudySession;
+
+    private Location currentLocation;
+    private LatLng currentLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +74,11 @@ public class HomescreenActivity extends AppCompatActivity
                     .add(R.id.homescreen, HomeFragment.class, null)
                     .commit();
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
-    public void replaceFragment(@IdRes int containerViewId, @NonNull Fragment fragment){
+    public void replaceFragment(@IdRes int containerViewId, @NonNull Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(containerViewId, fragment)
@@ -85,6 +102,16 @@ public class HomescreenActivity extends AppCompatActivity
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                currentLocation = location;
+                                currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            }
+                        }
+                    });
             return;
         }
 
@@ -134,11 +161,11 @@ public class HomescreenActivity extends AppCompatActivity
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
-    public void prepareMap(SupportMapFragment supportMapFragment){
+    public void prepareMap(SupportMapFragment supportMapFragment) {
         supportMapFragment.getMapAsync(this);
     }
 
-    public StudySession getDraftStudySession(){
+    public StudySession getDraftStudySession() {
         if (draftStudySession == null) {
             FirebaseUser user = mAuth.getCurrentUser();
             String firebase_uid = user.getUid();
@@ -148,11 +175,11 @@ public class HomescreenActivity extends AppCompatActivity
         return draftStudySession;
     }
 
-    public void saveDraftStudySession(NavigationProvider navigationProvider){
+    public void saveDraftStudySession(NavigationProvider navigationProvider) {
         draftStudySession.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null){
+                if (e != null) {
                     Log.e(TAG, "Error while saving", e);
                     Toast.makeText(getApplicationContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
                     return;
@@ -161,5 +188,30 @@ public class HomescreenActivity extends AppCompatActivity
                 navigationProvider.navigate();
             }
         });
+    }
+    public Point[] getTileCoordinates(){
+        Point[] tileCoordinates = new Point[4];
+        LatLng worldCoordinate = getMapProjection();
+        for (int i = 0; i < 4; i++) {
+            tileCoordinates[i] = worldCoordinateToTileCoordinate(worldCoordinate, i + 12);
+        }
+        return tileCoordinates;
+    }
+
+    private Point worldCoordinateToTileCoordinate(LatLng worldCoordinate, int zoom){
+        int scale = 1 << zoom;
+        return new Point((int)Math.floor((worldCoordinate.latitude * scale) / TILE_SIZE),
+                (int)Math.floor((worldCoordinate.longitude * scale) / TILE_SIZE));
+    }
+
+    private LatLng getMapProjection(){
+        double siny = Math.sin((currentLatLng.latitude * Math.PI) / 180);
+
+        siny = Math.min(Math.max(siny, -0.9999), 0.9999);
+
+        return new LatLng(
+                TILE_SIZE * (0.5 + currentLatLng.longitude / 360),
+                TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI))
+        );
     }
 }

@@ -17,18 +17,53 @@ public class StudySession extends ParseObject {
     public static final String KEY_OPEN_SESSION = "open_session";
     public static final String KEY_ORGANIZER_ID = "organizer_id";
 
+    public static final String KEY_TILE_COORDINATE_ZOOM_15 = "tile_coordinate_zoom_15";
+    public static final String KEY_TILE_COORDINATE_ZOOM_14 = "tile_coordinate_zoom_14";
+    public static final String KEY_TILE_COORDINATE_ZOOM_13 = "tile_coordinate_zoom_13";
+    public static final String KEY_TILE_COORDINATE_ZOOM_12 = "tile_coordinate_zoom_12";
+
     public Number getNumParticipants(){
         return getNumber(KEY_NUM_PARTICIPANTS);
     }
     public void setNumParticipants(Number numParticipants){
         put(KEY_NUM_PARTICIPANTS, numParticipants);
     }
+
     public String getLocation(){
         return getString(KEY_LOCATION);
     }
     public void setLocation(String location){
         put(KEY_LOCATION, location);
     }
+
+    public String getTileCoordinateZoom15(){
+        return getString(KEY_TILE_COORDINATE_ZOOM_15);
+    }
+    public void setTileCoordinateZoom15(String tileCoordinateZoom15){
+        put(KEY_TILE_COORDINATE_ZOOM_15, tileCoordinateZoom15);
+    }
+
+    public String getTileCoordinateZoom14(){
+        return getString(KEY_TILE_COORDINATE_ZOOM_14);
+    }
+    public void setTileCoordinateZoom14(String tileCoordinateZoom14){
+        put(KEY_TILE_COORDINATE_ZOOM_14, tileCoordinateZoom14);
+    }
+
+    public String getTileCoordinateZoom13(){
+        return getString(KEY_TILE_COORDINATE_ZOOM_13);
+    }
+    public void setTileCoordinateZoom13(String tileCoordinateZoom13){
+        put(KEY_TILE_COORDINATE_ZOOM_13, tileCoordinateZoom13);
+    }
+
+    public String getTileCoordinateZoom12(){
+        return getString(KEY_TILE_COORDINATE_ZOOM_12);
+    }
+    public void setTileCoordinateZoom12(String tileCoordinateZoom12){
+        put(KEY_TILE_COORDINATE_ZOOM_12, tileCoordinateZoom12);
+    }
+
     public String getStartTime(){
         return getString(KEY_START_TIME);
     }

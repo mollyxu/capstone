@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -65,43 +67,37 @@ public class StartSessionMapFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         btnStartPreferences = getActivity().findViewById(R.id.btn_start_preferences);
 
-
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
-
         ((HomescreenActivity) getActivity()).prepareMap(mapFragment);
 
         btnStartPreferences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick confirm button");
-                updateDatabase();
-                Log.i(TAG, "studySessionId: " + studySessionId);
 
-                StartSessionPreferencesFragment startSessionPreferencesFragment = StartSessionPreferencesFragment.newInstance(studySessionId);
-                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionPreferencesFragment);
+                updateDraftStudySession();
+
+                navigateToNextFragment();
             }
         });
     }
 
+    private void navigateToNextFragment(){
+        StartSessionPreferencesFragment startSessionPreferencesFragment = StartSessionPreferencesFragment.newInstance(studySessionId);
+        ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionPreferencesFragment);
+    }
 
-    public void updateDatabase(){
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        String firebase_uid = user.getUid();
-//
-//        // update parse db
-//        StudySession studySession = new StudySession();
-//        studySession.setOrganizerId(firebase_uid);
-//
-//        studySession.saveInBackground(new SaveCallback() {
-//            @Override
-//            public void done(ParseException e) {
-//                if (e != null){
-//                    Log.e(TAG, "Error while saving", e);
-//                    Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
-//                }
-//                Log.i(TAG, "New study session was created successfully!");
-//            }
-//        });
+    public void updateDraftStudySession(){
+        StudySession draftStudySession = ((HomescreenActivity) getActivity()).getDraftStudySession();
+
+        Point[] tileCoordinates = ((HomescreenActivity) getActivity()).getTileCoordinates();
+
+        Log.i(TAG, tileCoordinates[3].toString());
+
+        draftStudySession.setTileCoordinateZoom12(tileCoordinates[0].toString());
+        draftStudySession.setTileCoordinateZoom13(tileCoordinates[1].toString());
+        draftStudySession.setTileCoordinateZoom14(tileCoordinates[2].toString());
+        draftStudySession.setTileCoordinateZoom15(tileCoordinates[3].toString());
     }
 }
