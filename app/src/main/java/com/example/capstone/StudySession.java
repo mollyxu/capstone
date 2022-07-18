@@ -15,6 +15,7 @@ public class StudySession extends ParseObject {
     public static final String KEY_SUBJECTS = "subjects";
     public static final String KEY_STUDY_PREFERENCE = "study_preference";
     public static final String KEY_OPEN_SESSION = "open_session";
+    public static final String KEY_ORGANIZER_ID = "organizer_id";
 
     public Number getNumParticipants(){
         return getNumber(KEY_NUM_PARTICIPANTS);
@@ -57,6 +58,13 @@ public class StudySession extends ParseObject {
     }
     public void setOpenSession(Boolean openSession){
         put(KEY_OPEN_SESSION, openSession);
+    }
+
+    public String getOrganizerId(){
+        return getString(KEY_ORGANIZER_ID);
+    }
+    public void setOrganizerId(String organizerId){
+        put(KEY_ORGANIZER_ID, organizerId);
     }
 
 }

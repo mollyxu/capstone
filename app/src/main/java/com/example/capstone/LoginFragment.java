@@ -192,16 +192,16 @@ public class LoginFragment extends Fragment {
                                             Log.i(TAG, "Registration was successful!");
                                         }
                                     });
+                                    ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, ProfileCreationFragment.class);
+                                } else {
+                                    // TODO: comeback later to cleanup updateUI
+                                    Intent home = new Intent(getActivity(), HomescreenActivity.class);
+                                    startActivity(home);
+                                    updateUI(user);
                                 }
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-
-                            updateUI(user);
-
-                            // TODO: comeback later to cleanup updateUI
-                            Intent home = new Intent(getActivity(), HomescreenActivity.class);
-                            startActivity(home);
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",

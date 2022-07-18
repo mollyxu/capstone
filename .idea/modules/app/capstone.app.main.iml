@@ -60,6 +60,8 @@
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.8.0" level="project" />
     <orderEntry type="library" name="Gradle: com.github.parse-community.Parse-SDK-Android:bolts-tasks:4.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.parceler:parceler-api:1.1.12" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.bumptech.glide:disklrucache:4.12.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.bumptech.glide:annotations:4.12.0" level="project" />
     <orderEntry type="library" name="Gradle: androidx.databinding:viewbinding:7.2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.4.2@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.core:core:1.8.0@aar" level="project" />
@@ -117,16 +119,19 @@
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-components:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-auth:20.2.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-auth-base:18.0.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-android-sdk:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-core:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-bolts:14.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-android-sdk:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-core:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-bolts:14.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.installreferrer:installreferrer:1.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-common:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-login:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-share:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-applinks:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-messenger:14.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-gamingservices:14.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-common:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-login:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-share:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-applinks:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-messenger:14.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.facebook.android:facebook-gamingservices:14.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.parse-community.Parse-SDK-Android:parse:4.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.bumptech.glide:glide:4.12.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.bumptech.glide:gifdecoder:4.12.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.exifinterface:exifinterface:1.2.0@aar" level="project" />
   </component>
 </module>

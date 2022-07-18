@@ -11,9 +11,11 @@
     <ImageView
         android:id="@+id/iv_profile_picture"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_weight="1"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/avatars"
+        android:clickable="true"
+        android:focusable="true" />
 
     <EditText
         android:id="@+id/et_full_name"
@@ -21,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="Full name" />
+        android:hint="Full name"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/et_school"
@@ -29,7 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="School" />
+        android:hint="School"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/btn_complete_profile"
