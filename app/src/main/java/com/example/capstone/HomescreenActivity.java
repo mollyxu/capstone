@@ -27,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,7 +61,7 @@ public class HomescreenActivity extends AppCompatActivity
 
     private Location currentLocation;
     private LatLng currentLatLng;
-
+    private LatLng selectedLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,14 @@ public class HomescreenActivity extends AppCompatActivity
         map = googleMap;
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                map.clear();
+                map.addMarker(new MarkerOptions().position(point));
+                selectedLatLng = point;
+            }
+        });
         enableMyLocation();
     }
 
@@ -251,12 +260,12 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     private LatLng getMapProjection(){
-        double siny = Math.sin((currentLatLng.latitude * Math.PI) / 180);
+        double siny = Math.sin((selectedLatLng.latitude * Math.PI) / 180);
 
         siny = Math.min(Math.max(siny, -0.9999), 0.9999);
 
         return new LatLng(
-                TILE_SIZE * (0.5 + currentLatLng.longitude / 360),
+                TILE_SIZE * (0.5 + selectedLatLng.longitude / 360),
                 TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI))
         );
     }
