@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.facebook.android:facebook-messenger:14.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/24c6f313634c7ac0a373ff0ddff007d2/transformed/facebook-messenger-14.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/24c6f313634c7ac0a373ff0ddff007d2/transformed/facebook-messenger-14.1.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/24c6f313634c7ac0a373ff0ddff007d2/transformed/facebook-messenger-14.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/330e2b3607a2d15b14c905cc1decb45b/transformed/facebook-messenger-14.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/330e2b3607a2d15b14c905cc1decb45b/transformed/facebook-messenger-14.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/330e2b3607a2d15b14c905cc1decb45b/transformed/facebook-messenger-14.1.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.android/facebook-messenger/14.1.0/6065ac0ee45cbf34be708fb3566a99859ad09d24/facebook-messenger-14.1.0-javadoc.jar!/" />

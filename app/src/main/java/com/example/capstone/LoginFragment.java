@@ -73,7 +73,7 @@ public class LoginFragment extends Fragment {
                 if (email.matches("") || password.matches("")) {
                     Toast.makeText(getActivity(), "Please enter your email and password.", Toast.LENGTH_SHORT).show();
                 } else {
-                    signIn(email, password);
+                    login(email, password);
                 }
             }
         });
@@ -110,14 +110,13 @@ public class LoginFragment extends Fragment {
 
     private void updateUI(FirebaseUser user) {}
 
-    private void signIn(String email, String password) {
+    private void login(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
+                            Log.d(TAG, "loginWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
 
@@ -125,7 +124,7 @@ public class LoginFragment extends Fragment {
                             Intent home = new Intent(getActivity(), HomescreenActivity.class);
                             startActivity(home);
                         } else {
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.w(TAG, "loginWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
@@ -157,53 +156,62 @@ public class LoginFragment extends Fragment {
         });
     }
 
+    private boolean isNewUser(String uid) throws ParseException {
+        ParseQuery<User> query = ParseQuery.getQuery(User.class);
+        query.include(User.KEY_FIREBASE_UID);
+        query.whereEqualTo(User.KEY_FIREBASE_UID, uid);
+        return query.count() == 0;
+    }
+
+    private void registerNewUser(String uid){
+        User parseUser = new User();
+        parseUser.setFirebaseUid(uid);
+        parseUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                }
+                Log.i(TAG, "Registration was successful!");
+            }
+        });
+    }
+
+    private void navigateToProfileCreation(){
+        ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, ProfileCreationFragment.class);
+    }
+
+    private void navigateToHome(){
+        Intent home = new Intent(getActivity(), HomescreenActivity.class);
+        startActivity(home);
+    }
+
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            // update parse db
-                            User registeredUser = new User();
-                            String firebase_uid = user.getUid();
-
-                            // check if user already exists
-                            ParseQuery<User> query = ParseQuery.getQuery(User.class);
-                            query.include(User.KEY_FIREBASE_UID);
-                            query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
+                            Log.d(TAG, "loginWithCredential:success");
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            String firebaseUid = firebaseUser.getUid();
                             try {
-                                int account = query.count();
-                                if (account == 0) {
-                                    registeredUser.setFirebaseUid(user.getUid());
-                                    registeredUser.saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            if (e != null){
-                                                Log.e(TAG, "Error while saving", e);
-                                                Toast.makeText(getActivity(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                                            }
-                                            Log.i(TAG, "Registration was successful!");
-                                        }
-                                    });
-                                    ((AuthenticationActivity)getActivity()).replaceFragment(R.id.authentication, ProfileCreationFragment.class);
+                                if (isNewUser(firebaseUid)) {
+                                    registerNewUser(firebaseUid);
+                                    navigateToProfileCreation();
                                 } else {
                                     // TODO: comeback later to cleanup updateUI
-                                    Intent home = new Intent(getActivity(), HomescreenActivity.class);
-                                    startActivity(home);
-                                    updateUI(user);
+                                    navigateToHome();
+                                    updateUI(firebaseUser);
                                 }
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                         } else {
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.w(TAG, "loginWithCredential:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);

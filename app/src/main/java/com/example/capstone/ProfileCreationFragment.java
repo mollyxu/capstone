@@ -53,7 +53,7 @@ public class ProfileCreationFragment extends Fragment {
     private ImageView ivProfilePicture;
     private Button btnCompleteProfile;
 
-    private byte[] profilePictureByteArr;
+    private byte[] profilePictureByteArray;
 
     public ProfileCreationFragment() {}
 
@@ -78,19 +78,18 @@ public class ProfileCreationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         etFullName = getActivity().findViewById(R.id.et_full_name);
         etSchool = getActivity().findViewById(R.id.et_school);
-
         ivProfilePicture = getActivity().findViewById(R.id.iv_profile_picture);
+        btnCompleteProfile = getActivity().findViewById(R.id.btn_complete_profile);
+
+        Glide.with(getActivity()).load(R.drawable.placeholder_image).into(ivProfilePicture);
+
         ivProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Clicked");
-                onPickPhoto(v);
+                pickPhoto(v);
             }
         });
-
-        Glide.with(getActivity()).load(R.drawable.placeholder_image).into(ivProfilePicture);
-
-        btnCompleteProfile = getActivity().findViewById(R.id.btn_complete_profile);
         btnCompleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,50 +97,65 @@ public class ProfileCreationFragment extends Fragment {
                 String fullName = etFullName.getText().toString();
                 String school = etSchool.getText().toString();
 
-                if (fullName.matches("")) {
+                if (isEmptyString(fullName)) {
                     Toast.makeText(getActivity(), "Please enter your full name.", Toast.LENGTH_SHORT).show();
                 } else {
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    String firebase_uid = user.getUid();
-                    ParseQuery<User> query = ParseQuery.getQuery(User.class);
-                    query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
-
-                    query.getFirstInBackground(new GetCallback<User>() {
-                        public void done(User user, ParseException e) {
-                            if (e == null) {
-                                user.put("full_name",fullName);
-                                if (!school.matches("")){
-                                    user.put("school", school);
-                                }
-                                if (profilePictureByteArr != null) {
-                                    ParseFile profilePicture = new ParseFile("profile_pic", profilePictureByteArr);
-                                    user.put("profile_picture", profilePicture);
-                                }
-                                user.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if (e == null) {
-                                            Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(getActivity(), "Failed to Save", Toast.LENGTH_SHORT).show();
-                                            Log.d(getClass().getSimpleName(), "User update error: " + e);
-                                        }
-                                    }
-                                });
-                            } else {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-                    Intent home = new Intent(getActivity(), HomescreenActivity.class);
-                    startActivity(home);
+                    updateUserAsync(fullName, school);
+                    navigateToHome();
                 }
             }
         });
     }
 
-    public void onPickPhoto(View view) {
+    private boolean isEmptyString(String string){
+        return string.matches("");
+    }
+
+    private void navigateToHome(){
+        Intent home = new Intent(getActivity(), HomescreenActivity.class);
+        startActivity(home);
+    }
+
+    private ParseQuery<User> prepareUpdateUserParseQuery(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        String firebase_uid = user.getUid();
+        ParseQuery<User> query = ParseQuery.getQuery(User.class);
+        query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
+        return query;
+    }
+
+    private void updateUserAsync(String fullName, String school){
+        ParseQuery<User> query = prepareUpdateUserParseQuery();
+        query.getFirstInBackground(new GetCallback<User>() {
+            public void done(User user, ParseException e) {
+                if (e == null) {
+                    user.put("full_name",fullName);
+                    if (!isEmptyString(school)){
+                        user.put("school", school);
+                    }
+                    if (profilePictureByteArray != null) {
+                        ParseFile profilePicture = new ParseFile("profile_pic", profilePictureByteArray);
+                        user.put("profile_picture", profilePicture);
+                    }
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to Save", Toast.LENGTH_SHORT).show();
+                                Log.d(getClass().getSimpleName(), "User update error: " + e);
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void pickPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, PICK_PHOTO_CODE);
@@ -164,7 +178,7 @@ public class ProfileCreationFragment extends Fragment {
         return image;
     }
 
-    private static byte[] bitmapToByteArr(Bitmap bitmap){
+    private static byte[] bitmapToByteArray(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
@@ -177,7 +191,7 @@ public class ProfileCreationFragment extends Fragment {
             Uri photoUri = data.getData();
             Bitmap selectedImage = loadFromUri(photoUri);
             ivProfilePicture.setImageBitmap(selectedImage);
-            profilePictureByteArr = bitmapToByteArr(selectedImage);
+            profilePictureByteArray = bitmapToByteArray(selectedImage);
         }
     }
 }
