@@ -8,6 +8,7 @@
     tools:context=".HomescreenActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_joined_study_sessions"
         android:layout_width="409dp"
         android:layout_height="462dp"
         app:layout_constraintBottom_toBottomOf="parent"
