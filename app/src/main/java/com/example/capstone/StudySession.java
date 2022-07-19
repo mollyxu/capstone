@@ -8,6 +8,7 @@ import com.parse.ParseUser;
 
 @ParseClassName("StudySession")
 public class StudySession extends ParseObject {
+    public static final String KEY_NAME = "name";
     public static final String KEY_NUM_PARTICIPANTS = "num_participants";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_START_TIME = "start_time";
@@ -21,6 +22,13 @@ public class StudySession extends ParseObject {
     public static final String KEY_TILE_COORDINATE_ZOOM_14 = "tile_coordinate_zoom_14";
     public static final String KEY_TILE_COORDINATE_ZOOM_13 = "tile_coordinate_zoom_13";
     public static final String KEY_TILE_COORDINATE_ZOOM_12 = "tile_coordinate_zoom_12";
+
+    public String getName(){
+        return getString(KEY_NAME);
+    }
+    public void setName(String name){
+        put(KEY_NAME, name);
+    }
 
     public Number getNumParticipants(){
         return getNumber(KEY_NUM_PARTICIPANTS);
@@ -101,5 +109,4 @@ public class StudySession extends ParseObject {
     public void setOrganizerId(String organizerId){
         put(KEY_ORGANIZER_ID, organizerId);
     }
-
 }

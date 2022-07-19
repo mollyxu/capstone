@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
@@ -55,11 +56,11 @@ public class HomescreenActivity extends AppCompatActivity
 
     private GoogleMap map;
 
-
     private StudySession draftStudySession;
 
     private Location currentLocation;
     private LatLng currentLatLng;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,12 +96,16 @@ public class HomescreenActivity extends AppCompatActivity
         enableMyLocation();
     }
 
-    @SuppressLint("MissingPermission")
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+    private Boolean isUserGrantedPermission(){
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+                == PackageManager.PERMISSION_GRANTED);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void enableMyLocation() {
+        if (isUserGrantedPermission()) {
             map.setMyLocationEnabled(true);
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -175,7 +180,44 @@ public class HomescreenActivity extends AppCompatActivity
         return draftStudySession;
     }
 
-    public void saveDraftStudySession(NavigationProvider navigationProvider) {
+    private ParseQuery<User> prepareUpdateUserParseQuery(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        String firebase_uid = user.getUid();
+        ParseQuery<User> query = ParseQuery.getQuery(User.class);
+        query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
+        return query;
+    }
+
+    private void updateUserWithJoinedStudySessionAsync(String studySessionId){
+        ParseQuery<User> query = prepareUpdateUserParseQuery();
+        query.getFirstInBackground(new GetCallback<User>() {
+            public void done(User user, ParseException e) {
+                if (e == null) {
+                    user.add("joined_sessions",studySessionId);
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Failed to Save", Toast.LENGTH_SHORT).show();
+                                Log.d(getClass().getSimpleName(), "User update error: " + e);
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void updateUserJoinedStudySession(String studySessionId){
+        prepareUpdateUserParseQuery();
+        updateUserWithJoinedStudySessionAsync(studySessionId);
+    }
+
+    public void saveDraftStudySessionAndUser(NavigationProvider navigationProvider) {
         draftStudySession.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -184,11 +226,15 @@ public class HomescreenActivity extends AppCompatActivity
                     Toast.makeText(getApplicationContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                updateUserJoinedStudySession(draftStudySession.getObjectId());
+
                 draftStudySession = null;
                 navigationProvider.navigate();
             }
         });
     }
+
     public Point[] getTileCoordinates(){
         Point[] tileCoordinates = new Point[4];
         LatLng worldCoordinate = getMapProjection();

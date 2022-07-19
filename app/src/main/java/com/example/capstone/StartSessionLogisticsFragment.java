@@ -23,6 +23,7 @@ import com.parse.SaveCallback;
 public class StartSessionLogisticsFragment extends Fragment {
     private static final String TAG = "StartSessionLogisticsFragment";
 
+    private EditText etStartSessionName;
     private EditText etStartSessionNumParticipants;
     private EditText etStartSessionStartTime;
     private EditText etStartSessionEndTime;
@@ -53,6 +54,7 @@ public class StartSessionLogisticsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        etStartSessionName = getActivity().findViewById(R.id.et_start_session_name);
         etStartSessionNumParticipants = getActivity().findViewById(R.id.et_start_session_num_participants);
         etStartSessionStartTime = getActivity().findViewById(R.id.et_start_session_start_time);
         etStartSessionEndTime = getActivity().findViewById(R.id.et_start_session_end_time);
@@ -68,12 +70,14 @@ public class StartSessionLogisticsFragment extends Fragment {
     }
 
     public void updateDraftStudySession(){
+        String name = etStartSessionName.getText().toString();
         Number numParticipants = Integer.parseInt(etStartSessionNumParticipants.getText().toString());
         String startTime = etStartSessionStartTime.getText().toString();
         String endTime = etStartSessionEndTime.getText().toString();
 
         StudySession draftStudySession = ((HomescreenActivity) getActivity()).getDraftStudySession();
 
+        draftStudySession.setName(name);
         draftStudySession.setNumParticipants(numParticipants);
         draftStudySession.setStartTime(startTime);
         draftStudySession.setEndTime(endTime);

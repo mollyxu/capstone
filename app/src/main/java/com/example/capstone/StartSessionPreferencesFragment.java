@@ -25,6 +25,8 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.util.Arrays;
+
 public class StartSessionPreferencesFragment extends Fragment implements NavigationProvider{
     private FirebaseAuth mAuth;
 
@@ -85,7 +87,8 @@ public class StartSessionPreferencesFragment extends Fragment implements Navigat
                     Toast.makeText(getActivity(), "Please fill in your information correctly", Toast.LENGTH_SHORT).show();
                 }
                 updateDraftStudySession(subjects, studyPreference, openSession);
-                getHomescreenActivity().saveDraftStudySession(thisFragment);
+                getHomescreenActivity().saveDraftStudySessionAndUser(thisFragment);
+
                 navigate();
             }
         });
@@ -109,10 +112,6 @@ public class StartSessionPreferencesFragment extends Fragment implements Navigat
                     studyPreferenceSelected = item.toString();
 
                 }
-//                Toast.makeText(getContext(), "Selected",
-//                        Toast.LENGTH_SHORT).show();
-
-
             }
 
             @Override
@@ -123,17 +122,7 @@ public class StartSessionPreferencesFragment extends Fragment implements Navigat
     }
 
     public int studyPreferenceStringtoInt(String studyPreference){
-        if (studyPreference == "Silent study session"){
-            return 1;
-        } else if (studyPreference == "Quiet study session"){
-            return 2;
-        } else if (studyPreference == "Some discussion"){
-            return 3;
-        } else if (studyPreference == "Lots of discussion"){
-            return 4;
-        } else {
-            return 5;
-        }
+        return Arrays.asList(studyPreferences).indexOf(studyPreference) + 1;
     }
 
     public boolean isInputValid(String subjects, int studyPreference, Boolean openSession){
