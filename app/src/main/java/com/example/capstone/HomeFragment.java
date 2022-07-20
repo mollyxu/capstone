@@ -119,6 +119,7 @@ public class HomeFragment extends Fragment {
 
         rvJoinedStudySessions.setAdapter(adapter);
         rvJoinedStudySessions.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         queryEachJoinedStudySessions();
     }
 
@@ -130,7 +131,7 @@ public class HomeFragment extends Fragment {
         return list;
     }
 
-    private ParseQuery<User> prepareGetUserJoinedStudySessionsQuery(){
+    private ParseQuery<User> getUserJoinedStudySessionsQuery(){
         FirebaseUser user = mAuth.getCurrentUser();
         String firebase_uid = user.getUid();
         ParseQuery<User> query = ParseQuery.getQuery(User.class);
@@ -139,7 +140,7 @@ public class HomeFragment extends Fragment {
         return query;
     }
 
-    private ParseQuery<StudySession> prepareStudySessionQuery(List<String> joinedSessionIds){
+    private ParseQuery<StudySession> getStudySessionQuery(List<String> joinedSessionIds){
         ParseQuery<StudySession> query = ParseQuery.getQuery(StudySession.class);
         query.whereContainedIn(StudySession.KEY_OBJECT_ID, joinedSessionIds);
         query.include(StudySession.KEY_ORGANIZER_ID);
@@ -151,17 +152,18 @@ public class HomeFragment extends Fragment {
     }
 
     private void queryEachJoinedStudySessions() {
-        ParseQuery<User> userQuery = prepareGetUserJoinedStudySessionsQuery();
+        ParseQuery<User> userQuery = getUserJoinedStudySessionsQuery();
         userQuery.getFirstInBackground(new GetCallback<User>() {
             public void done(User user, ParseException e) {
                 if (e == null) {
                     try {
                         List<String> joinedSessionIds = getListFromJsonArray(user.getJoinedSessions());
-                        ParseQuery<StudySession> studySessionQuery = prepareStudySessionQuery(joinedSessionIds);
+                        ParseQuery<StudySession> studySessionQuery = getStudySessionQuery(joinedSessionIds);
 
                         studySessionQuery.findInBackground(new FindCallback<StudySession>() {
                             @Override
                             public void done(List<StudySession> joinedStudySessions, ParseException e) {
+                                allJoinedStudySessions.clear();
                                 allJoinedStudySessions.addAll(joinedStudySessions);
                                 adapter.notifyDataSetChanged();
                             }
