@@ -9,6 +9,15 @@
     tools:context=".StartSessionLogisticsFragment">
 
     <EditText
+        android:id="@+id/et_start_session_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Name of study session"
+        />
+
+    <EditText
         android:id="@+id/et_start_session_num_participants"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
