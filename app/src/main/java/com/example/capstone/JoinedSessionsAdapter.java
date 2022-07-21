@@ -91,7 +91,7 @@ public class JoinedSessionsAdapter extends RecyclerView.Adapter<JoinedSessionsAd
         public void bind(StudySession studySession) throws ParseException {
             // Bind the post data to the view elements
             tvStudySessionName.setText(studySession.getName());
-            tvStartTime.setText(studySession.getStartTime());
+            tvStartTime.setText(studySession.getStartTime().toString());
 
             Uri profilePictureUrl = getUserProfilePicture();
 

@@ -27,13 +27,30 @@
         android:inputType="number"/>
 
     <EditText
+        android:id="@+id/et_start_session_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Date"
+        android:inputType="datetime"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:cursorVisible="false"/>
+
+    <EditText
         android:id="@+id/et_start_session_start_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
         android:hint="Start time"
-        android:inputType="datetime"/>
+        android:inputType="datetime"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:cursorVisible="false"/>
 
     <EditText
         android:id="@+id/et_start_session_end_time"
@@ -42,7 +59,11 @@
         android:layout_weight="1"
         android:ems="10"
         android:hint="End time"
-        android:inputType="datetime"/>
+        android:inputType="datetime"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:cursorVisible="false"/>
 
     <Button
         android:id="@+id/btn_start_map"

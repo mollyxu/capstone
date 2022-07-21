@@ -39,6 +39,9 @@ import com.parse.SaveCallback;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class HomescreenActivity extends AppCompatActivity
         implements
@@ -58,6 +61,7 @@ public class HomescreenActivity extends AppCompatActivity
     private GoogleMap map;
 
     private StudySession draftStudySession;
+    protected List<StudySession> allJoinedStudySessions = new ArrayList<>();
 
     private Location currentLocation;
     private LatLng currentLatLng;
@@ -84,9 +88,9 @@ public class HomescreenActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(containerViewId, fragment)
-                .setReorderingAllowed(true)
                 .addToBackStack(null)
                 .commit();
+        Log.e(TAG, "fragment replaced");
     }
 
     @Override
@@ -268,5 +272,9 @@ public class HomescreenActivity extends AppCompatActivity
                 TILE_SIZE * (0.5 + selectedLatLng.longitude / 360),
                 TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI))
         );
+    }
+
+    public List<StudySession> getAllJoinedStudySessions() {
+        return allJoinedStudySessions;
     }
 }

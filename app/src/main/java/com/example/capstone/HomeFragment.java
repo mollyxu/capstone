@@ -43,13 +43,12 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView rvJoinedStudySessions;
     protected JoinedSessionsAdapter adapter;
-    protected List<StudySession> allJoinedStudySessions;
 
     FloatingActionButton mAddFab, mStartSessionFab, mJoinSessionFab;
 
     TextView startSessionText, joinSessionText;
 
-    Boolean isAllFabsVisible;
+    Boolean isAllFabsVisible = false;
 
     public HomeFragment() {}
 
@@ -84,8 +83,6 @@ public class HomeFragment extends Fragment {
         startSessionText.setVisibility(View.GONE);
         joinSessionText.setVisibility(View.GONE);
 
-        isAllFabsVisible = false;
-
         mAddFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -114,8 +111,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        allJoinedStudySessions = new ArrayList<>();
-        adapter = new JoinedSessionsAdapter(getActivity(), allJoinedStudySessions);
+        adapter = new JoinedSessionsAdapter(getActivity(), getAllJoinedStudySessions());
 
         rvJoinedStudySessions.setAdapter(adapter);
         rvJoinedStudySessions.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -151,6 +147,10 @@ public class HomeFragment extends Fragment {
         return query;
     }
 
+    private List<StudySession> getAllJoinedStudySessions (){
+        return ((HomescreenActivity) getActivity()).getAllJoinedStudySessions();
+    }
+
     private void queryEachJoinedStudySessions() {
         ParseQuery<User> userQuery = getUserJoinedStudySessionsQuery();
         userQuery.getFirstInBackground(new GetCallback<User>() {
@@ -160,15 +160,12 @@ public class HomeFragment extends Fragment {
                         List<String> joinedSessionIds = getListFromJsonArray(user.getJoinedSessions());
                         ParseQuery<StudySession> studySessionQuery = getStudySessionQuery(joinedSessionIds);
 
-                        studySessionQuery.findInBackground(new FindCallback<StudySession>() {
-                            @Override
-                            public void done(List<StudySession> joinedStudySessions, ParseException e) {
-                                allJoinedStudySessions.clear();
-                                allJoinedStudySessions.addAll(joinedStudySessions);
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                    } catch (JSONException ex) {
+                        List<StudySession> joinedStudySessions = studySessionQuery.find();
+                        getAllJoinedStudySessions().clear();
+                        getAllJoinedStudySessions().addAll(joinedStudySessions);
+                        adapter.notifyDataSetChanged();
+
+                    } catch (JSONException | ParseException ex) {
                         ex.printStackTrace();
                     }
                 } else {
