@@ -111,6 +111,14 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        mJoinSessionFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick join session button");
+                ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, JoinSessionFragment.newInstance(""));
+            }
+        });
+
         adapter = new JoinedSessionsAdapter(getActivity(), getAllJoinedStudySessions());
 
         rvJoinedStudySessions.setAdapter(adapter);

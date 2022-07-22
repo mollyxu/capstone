@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.SaveCallback;
 
 public class StartSessionMapFragment extends Fragment {
@@ -68,7 +69,7 @@ public class StartSessionMapFragment extends Fragment {
         btnStartPreferences = getActivity().findViewById(R.id.btn_start_preferences);
 
         SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.start_session_map);
         ((HomescreenActivity) getActivity()).prepareMap(mapFragment);
 
         btnStartPreferences.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +92,7 @@ public class StartSessionMapFragment extends Fragment {
     public void updateDraftStudySession(){
         StudySession draftStudySession = ((HomescreenActivity) getActivity()).getDraftStudySession();
 
-        Point[] tileCoordinates = ((HomescreenActivity) getActivity()).getTileCoordinates();
+        Point[] tileCoordinates = ((HomescreenActivity) getActivity()).getTileCoordinates(((HomescreenActivity) getActivity()).getSelectedLatLng());
 
         Log.i(TAG, tileCoordinates[3].toString());
 
@@ -99,5 +100,9 @@ public class StartSessionMapFragment extends Fragment {
         draftStudySession.setTileCoordinateZoom13(tileCoordinates[1].toString());
         draftStudySession.setTileCoordinateZoom14(tileCoordinates[2].toString());
         draftStudySession.setTileCoordinateZoom15(tileCoordinates[3].toString());
+
+        LatLng currentLatLng = ((HomescreenActivity) getActivity()).getCurrentLatLng();
+        ParseGeoPoint currentGeoPoint = new ParseGeoPoint(currentLatLng.latitude, currentLatLng.longitude);
+        draftStudySession.setLocation(currentGeoPoint);
     }
 }

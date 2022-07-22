@@ -2,6 +2,7 @@ package com.example.capstone;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -39,10 +40,10 @@ public class StudySession extends ParseObject {
         put(KEY_NUM_PARTICIPANTS, numParticipants);
     }
 
-    public String getLocation(){
-        return getString(KEY_LOCATION);
+    public ParseGeoPoint getLocation(){
+        return getParseGeoPoint(KEY_LOCATION);
     }
-    public void setLocation(String location){
+    public void setLocation(ParseGeoPoint location){
         put(KEY_LOCATION, location);
     }
 

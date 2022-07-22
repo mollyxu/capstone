@@ -11,7 +11,7 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/google_map"
+        android:id="@+id/start_session_map"
         android:layout_width="match_parent"
         android:layout_height="600dp"/>
 

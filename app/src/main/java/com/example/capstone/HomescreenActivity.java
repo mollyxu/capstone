@@ -27,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
@@ -54,6 +56,8 @@ public class HomescreenActivity extends AppCompatActivity
 
     private static final String TAG = "HomescreenActivity";
     private static final int TILE_SIZE = 256;
+    private static final int MIN_ZOOM = 12;
+    private static final int MAX_ZOOM = 15;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
@@ -66,6 +70,12 @@ public class HomescreenActivity extends AppCompatActivity
     private Location currentLocation;
     private LatLng currentLatLng;
     private LatLng selectedLatLng;
+
+    public MapGestureHandler mapGestureHandler;
+
+    public double currentZoom = -1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +116,31 @@ public class HomescreenActivity extends AppCompatActivity
                 selectedLatLng = point;
             }
         });
+
+        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener(){
+            @Override
+            public void onCameraMove() {
+                CameraPosition cameraPosition = googleMap.getCameraPosition();
+                if (currentZoom == cameraPosition.zoom) {
+                    return;
+                }
+                if (mapGestureHandler == null) {
+                    return;
+                }
+
+                currentZoom = cameraPosition.zoom;
+
+                if (currentZoom < MIN_ZOOM) {
+                    mapGestureHandler.onZoomChange(MIN_ZOOM, currentLatLng);
+                }
+                if (currentZoom > MAX_ZOOM) {
+                    mapGestureHandler.onZoomChange(MAX_ZOOM, currentLatLng);
+                }
+
+                mapGestureHandler.onZoomChange((int) currentZoom, currentLatLng);
+            }
+        });
+
         enableMyLocation();
     }
 
@@ -127,6 +162,7 @@ public class HomescreenActivity extends AppCompatActivity
                             if (location != null) {
                                 currentLocation = location;
                                 currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                                Log.i(TAG, "curr lat: " + currentLatLng);
                             }
                         }
                     });
@@ -193,7 +229,7 @@ public class HomescreenActivity extends AppCompatActivity
         return draftStudySession;
     }
 
-    private ParseQuery<User> prepareUpdateUserParseQuery(){
+    private ParseQuery<User> getUpdateUserParseQuery(){
         FirebaseUser user = mAuth.getCurrentUser();
         String firebase_uid = user.getUid();
         ParseQuery<User> query = ParseQuery.getQuery(User.class);
@@ -202,7 +238,7 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     private void updateUserWithJoinedStudySessionAsync(String studySessionId){
-        ParseQuery<User> query = prepareUpdateUserParseQuery();
+        ParseQuery<User> query = getUpdateUserParseQuery();
         query.getFirstInBackground(new GetCallback<User>() {
             public void done(User user, ParseException e) {
                 if (e == null) {
@@ -226,7 +262,7 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     private void updateUserJoinedStudySession(String studySessionId){
-        prepareUpdateUserParseQuery();
+        getUpdateUserParseQuery();
         updateUserWithJoinedStudySessionAsync(studySessionId);
     }
 
@@ -248,11 +284,16 @@ public class HomescreenActivity extends AppCompatActivity
         });
     }
 
-    public Point[] getTileCoordinates(){
+    public Point getTileCoordinate(int zoomLevel, LatLng latLng){
+        LatLng worldCoordinate = getMapProjection(latLng);
+        Log.i(TAG, "tile coordinate: " + worldCoordinateToTileCoordinate(worldCoordinate, zoomLevel));
+        return worldCoordinateToTileCoordinate(worldCoordinate, zoomLevel);
+    }
+
+    public Point[] getTileCoordinates(LatLng latLng){
         Point[] tileCoordinates = new Point[4];
-        LatLng worldCoordinate = getMapProjection();
         for (int i = 0; i < 4; i++) {
-            tileCoordinates[i] = worldCoordinateToTileCoordinate(worldCoordinate, i + 12);
+            tileCoordinates[i] = getTileCoordinate(i + MIN_ZOOM, latLng);
         }
         return tileCoordinates;
     }
@@ -263,13 +304,13 @@ public class HomescreenActivity extends AppCompatActivity
                 (int)Math.floor((worldCoordinate.longitude * scale) / TILE_SIZE));
     }
 
-    private LatLng getMapProjection(){
-        double siny = Math.sin((selectedLatLng.latitude * Math.PI) / 180);
+    private LatLng getMapProjection(LatLng latLng){
+        double siny = Math.sin((latLng.latitude * Math.PI) / 180);
 
         siny = Math.min(Math.max(siny, -0.9999), 0.9999);
 
         return new LatLng(
-                TILE_SIZE * (0.5 + selectedLatLng.longitude / 360),
+                TILE_SIZE * (0.5 + latLng.longitude / 360),
                 TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI))
         );
     }
@@ -277,4 +318,18 @@ public class HomescreenActivity extends AppCompatActivity
     public List<StudySession> getAllJoinedStudySessions() {
         return allJoinedStudySessions;
     }
+
+    public int getZoomLevel(){
+        return (int) map.getCameraPosition().zoom;
+    }
+
+    public LatLng getCurrentLatLng() {
+        return currentLatLng;
+    }
+
+    public LatLng getSelectedLatLng() {
+        return selectedLatLng;
+    }
+
+
 }
