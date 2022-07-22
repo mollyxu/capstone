@@ -5,6 +5,8 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.Date;
+
 
 @ParseClassName("StudySession")
 public class StudySession extends ParseObject {
@@ -72,16 +74,16 @@ public class StudySession extends ParseObject {
         put(KEY_TILE_COORDINATE_ZOOM_12, tileCoordinateZoom12);
     }
 
-    public String getStartTime(){
-        return getString(KEY_START_TIME);
+    public Date getStartTime(){
+        return getDate(KEY_START_TIME);
     }
-    public void setStartTime(String startTime){
+    public void setStartTime(Date startTime){
         put(KEY_START_TIME, startTime);
     }
-    public String getEndTime(){
-        return getString(KEY_END_TIME);
+    public Date getEndTime(){
+        return getDate(KEY_END_TIME);
     }
-    public void setEndTime(String endTime){
+    public void setEndTime(Date endTime){
         put(KEY_END_TIME, endTime);
     }
     public String getSubjects(){

@@ -85,11 +85,10 @@ public class StartSessionPreferencesFragment extends Fragment implements Navigat
 
                 if (!isInputValid(subjects, studyPreference, openSession)){
                     Toast.makeText(getActivity(), "Please fill in your information correctly", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 updateDraftStudySession(subjects, studyPreference, openSession);
                 getHomescreenActivity().saveDraftStudySessionAndUser(thisFragment);
-
-                navigate();
             }
         });
 

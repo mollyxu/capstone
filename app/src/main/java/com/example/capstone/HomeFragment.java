@@ -43,13 +43,12 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView rvJoinedStudySessions;
     protected JoinedSessionsAdapter adapter;
-    protected List<StudySession> allJoinedStudySessions;
 
     FloatingActionButton mAddFab, mStartSessionFab, mJoinSessionFab;
 
     TextView startSessionText, joinSessionText;
 
-    Boolean isAllFabsVisible;
+    Boolean isAllFabsVisible = false;
 
     public HomeFragment() {}
 
@@ -84,8 +83,6 @@ public class HomeFragment extends Fragment {
         startSessionText.setVisibility(View.GONE);
         joinSessionText.setVisibility(View.GONE);
 
-        isAllFabsVisible = false;
-
         mAddFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -114,11 +111,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        allJoinedStudySessions = new ArrayList<>();
-        adapter = new JoinedSessionsAdapter(getActivity(), allJoinedStudySessions);
+        adapter = new JoinedSessionsAdapter(getActivity(), getAllJoinedStudySessions());
 
         rvJoinedStudySessions.setAdapter(adapter);
         rvJoinedStudySessions.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         queryEachJoinedStudySessions();
     }
 
@@ -130,7 +127,7 @@ public class HomeFragment extends Fragment {
         return list;
     }
 
-    private ParseQuery<User> prepareGetUserJoinedStudySessionsQuery(){
+    private ParseQuery<User> getUserJoinedStudySessionsQuery(){
         FirebaseUser user = mAuth.getCurrentUser();
         String firebase_uid = user.getUid();
         ParseQuery<User> query = ParseQuery.getQuery(User.class);
@@ -139,7 +136,7 @@ public class HomeFragment extends Fragment {
         return query;
     }
 
-    private ParseQuery<StudySession> prepareStudySessionQuery(List<String> joinedSessionIds){
+    private ParseQuery<StudySession> getStudySessionQuery(List<String> joinedSessionIds){
         ParseQuery<StudySession> query = ParseQuery.getQuery(StudySession.class);
         query.whereContainedIn(StudySession.KEY_OBJECT_ID, joinedSessionIds);
         query.include(StudySession.KEY_ORGANIZER_ID);
@@ -150,23 +147,25 @@ public class HomeFragment extends Fragment {
         return query;
     }
 
+    private List<StudySession> getAllJoinedStudySessions (){
+        return ((HomescreenActivity) getActivity()).getAllJoinedStudySessions();
+    }
+
     private void queryEachJoinedStudySessions() {
-        ParseQuery<User> userQuery = prepareGetUserJoinedStudySessionsQuery();
+        ParseQuery<User> userQuery = getUserJoinedStudySessionsQuery();
         userQuery.getFirstInBackground(new GetCallback<User>() {
             public void done(User user, ParseException e) {
                 if (e == null) {
                     try {
                         List<String> joinedSessionIds = getListFromJsonArray(user.getJoinedSessions());
-                        ParseQuery<StudySession> studySessionQuery = prepareStudySessionQuery(joinedSessionIds);
+                        ParseQuery<StudySession> studySessionQuery = getStudySessionQuery(joinedSessionIds);
 
-                        studySessionQuery.findInBackground(new FindCallback<StudySession>() {
-                            @Override
-                            public void done(List<StudySession> joinedStudySessions, ParseException e) {
-                                allJoinedStudySessions.addAll(joinedStudySessions);
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                    } catch (JSONException ex) {
+                        List<StudySession> joinedStudySessions = studySessionQuery.find();
+                        getAllJoinedStudySessions().clear();
+                        getAllJoinedStudySessions().addAll(joinedStudySessions);
+                        adapter.notifyDataSetChanged();
+
+                    } catch (JSONException | ParseException ex) {
                         ex.printStackTrace();
                     }
                 } else {

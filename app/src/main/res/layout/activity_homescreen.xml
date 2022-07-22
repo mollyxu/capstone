@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/homescreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </FrameLayout>
+    </androidx.fragment.app.FragmentContainerView>
 
 </LinearLayout>
