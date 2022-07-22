@@ -71,7 +71,6 @@ public class HomescreenActivity extends AppCompatActivity
     private StudySession draftStudySession;
     protected List<StudySession> allJoinedStudySessions = new ArrayList<>();
 
-    // the id or the entire study sesison?
     protected String selectedMarkerStudySessionId;
 
     private User currentUser;
@@ -83,8 +82,6 @@ public class HomescreenActivity extends AppCompatActivity
     public MapGestureHandler mapGestureHandler;
 
     public double currentZoom = -1;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +113,6 @@ public class HomescreenActivity extends AppCompatActivity
         String firebase_uid = user.getUid();
         ParseQuery<User> query = ParseQuery.getQuery(User.class);
         query.whereEqualTo(User.KEY_FIREBASE_UID, firebase_uid);
-        // comeback later to add more fields
         query.include("study_preference");
         return query;
     }
@@ -127,7 +123,6 @@ public class HomescreenActivity extends AppCompatActivity
                 .replace(containerViewId, fragment)
                 .addToBackStack(null)
                 .commit();
-        Log.e(TAG, "fragment replaced");
     }
 
     @Override
@@ -159,12 +154,11 @@ public class HomescreenActivity extends AppCompatActivity
 
                 if (currentZoom < MIN_ZOOM) {
                     mapGestureHandler.onZoomChange(MIN_ZOOM, currentLatLng);
-                }
-                if (currentZoom > MAX_ZOOM) {
+                } else if (currentZoom > MAX_ZOOM) {
                     mapGestureHandler.onZoomChange(MAX_ZOOM, currentLatLng);
+                } else {
+                    mapGestureHandler.onZoomChange((int) currentZoom, currentLatLng);
                 }
-
-                mapGestureHandler.onZoomChange((int) currentZoom, currentLatLng);
             }
         });
 

@@ -90,7 +90,6 @@ public class JoinSessionFragment extends Fragment implements MapGestureHandler, 
         btnConfirmJoinSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                filterStudySessions(((HomescreenActivity) getActivity()).getZoomLevel(), ((HomescreenActivity) getActivity()).getCurrentLatLng());
                 getHomescreenActivity().updateUserJoinedStudySession(getHomescreenActivity().getSelectedMarkerStudySessionId(), getHomescreenActivity().getCurrentUser());
                 navigate();
             }
@@ -155,7 +154,7 @@ public class JoinSessionFragment extends Fragment implements MapGestureHandler, 
 
     private void navigateToNextFragment(){
         StartSessionPreferencesFragment startSessionPreferencesFragment = StartSessionPreferencesFragment.newInstance(studySessionId);
-        ((HomescreenActivity)getActivity()).replaceFragment(R.id.homescreen, startSessionPreferencesFragment);
+        getHomescreenActivity().replaceFragment(R.id.homescreen, startSessionPreferencesFragment);
     }
 
     private void filterStudySessions(int zoomLevel, LatLng currentLatLng){
@@ -180,14 +179,11 @@ public class JoinSessionFragment extends Fragment implements MapGestureHandler, 
                     Log.i(TAG, studySessions.get(i).getObjectId());
                 }
 
-                // show all study sessions
-                ((HomescreenActivity)getActivity()).showAllStudySessionsOnMap(studySessions);
+                getHomescreenActivity().showAllStudySessionsOnMap(studySessions);
 
-                // call recommendation engine
                 StudySession recommendedSession = recommendationEngine.getHighestScoredSession(studySessions, currentLatLng, ((HomescreenActivity)getActivity()).getCurrentUser());
                 if (recommendedSession != null) {
                     Log.i(TAG, "recommendation: " + recommendedSession.getObjectId());
-
                 }
             }
         });
@@ -196,21 +192,13 @@ public class JoinSessionFragment extends Fragment implements MapGestureHandler, 
 
     public ParseQuery<StudySession> getStudySessionQuery(int zoomLevel, LatLng currentLatlng, String subjects, Date startDate, Date endDate){
         ParseQuery<StudySession> query = ParseQuery.getQuery(StudySession.class);
-        // location
-        query.whereEqualTo("tile_coordinate_zoom_" + zoomLevel, ((HomescreenActivity)getActivity()).getTileCoordinate(zoomLevel, currentLatlng).toString());
-
-        // subject
+        query.whereEqualTo("tile_coordinate_zoom_" + zoomLevel, getHomescreenActivity().getTileCoordinate(zoomLevel, currentLatlng).toString());
         query.whereEqualTo("subjects", subjects);
-
-        // datetime (KIND OF BUGGY, the start_time query isn't working)
-//        query.whereGreaterThanOrEqualTo("start_time", startDate);
-//        query.whereLessThanOrEqualTo("end_time", endDate);
 
         query.include("num_participants");
         query.include("study_preference");
         query.include("subjects");
         query.include("open_session");
-//        query.include("location");
         query.include("name");
         query.include("start_time");
         query.include("end_time");
@@ -219,9 +207,7 @@ public class JoinSessionFragment extends Fragment implements MapGestureHandler, 
 
     @Override
     public void onZoomChange(int zoomLevel, LatLng currentLatLng) {
-        // move logic to else where but still call that method
         filterStudySessions(zoomLevel, currentLatLng);
-
     }
 
     @Override

@@ -8,31 +8,6 @@
     android:orientation="vertical"
     tools:context=".fragment.JoinSessionFragment">
 
-<!--    <CheckBox-->
-<!--        android:id="@+id/checkBox3"-->
-<!--        android:layout_width="45dp"-->
-<!--        android:layout_height="45dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/sv_join_session"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <CheckBox-->
-<!--        android:id="@+id/checkBox4"-->
-<!--        android:layout_width="45dp"-->
-<!--        android:layout_height="45dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/sv_join_session"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/checkBox3"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0" />-->
-
-<!--    <CheckBox-->
-<!--        android:layout_width="45dp"-->
-<!--        android:layout_height="45dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/sv_join_session"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/checkBox4"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0" />-->
-
     <SearchView
         android:id="@+id/sv_join_session_subject"
         android:layout_width="match_parent"

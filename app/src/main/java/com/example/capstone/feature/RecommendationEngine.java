@@ -13,7 +13,6 @@ import java.util.List;
 public class RecommendationEngine {
     private static final String TAG = "RecommendationEngine";
 
-    // declare weights HERE
     private static final int FIVE_KILOMETER = 5000;
     private static final int FIVE_KILOMETER_WEIGHT = 3;
 
@@ -25,14 +24,8 @@ public class RecommendationEngine {
 
     private static final double GREATER_THAN_FIFTEEN_KILOMETER_WEIGHT = 0.5;
 
-
     private static final double PREFERENCE_MULTIPLIER = 0.5;
 
-    // all computation, assigning weights => all methods within this class
-
-    // List<StudySession> -> StudySession
-
-    // COME BACK and FILL methods, SPLIT methods into specific tasks, each method 4-6 lines
     public StudySession getHighestScoredSession(List<StudySession> studySessions, LatLng currentLatLng, User currentUser){
         double highestScore = 0;
         StudySession highestScoredSession = null;
@@ -76,11 +69,4 @@ public class RecommendationEngine {
     private double getPreferencesScore(StudySession studySession, int userStudyPreference){
         return Math.abs((int) studySession.getStudyPreference() - userStudyPreference) * PREFERENCE_MULTIPLIER;
     }
-
-
-
-
-
-
-
 }
