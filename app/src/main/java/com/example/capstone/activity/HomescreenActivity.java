@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.JsonArray;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -44,6 +45,9 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +73,7 @@ public class HomescreenActivity extends AppCompatActivity
     private GoogleMap map;
 
     private StudySession draftStudySession;
+    protected List<String> allJoinedStudySessionIds = new ArrayList<>();
     protected List<StudySession> allJoinedStudySessions = new ArrayList<>();
 
     protected String selectedMarkerStudySessionId;
@@ -103,8 +108,15 @@ public class HomescreenActivity extends AppCompatActivity
             @Override
             public void done(User user, ParseException e) {
                 currentUser = user;
+                try {
+                    allJoinedStudySessionIds = getListFromJsonArray(user.getJoinedSessions());
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
+
+
 
     }
 
@@ -285,9 +297,38 @@ public class HomescreenActivity extends AppCompatActivity
         });
     }
 
+    private void updateUserJoinedStudySessionsAsync(List<String> studySessionIds, User currentUser){
+        ParseQuery<User> query = getUpdateUserParseQuery();
+        query.getFirstInBackground(new GetCallback<User>() {
+            public void done(User user, ParseException e) {
+                if (e == null) {
+                    user.setJoinedSessions(new JSONArray(studySessionIds));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Failed to Save", Toast.LENGTH_SHORT).show();
+                                Log.d(getClass().getSimpleName(), "User update error: " + e);
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void updateUserJoinedStudySession(String studySessionId, User currentUser){
         getUpdateUserParseQuery();
         updateUserWithJoinedStudySessionAsync(studySessionId, currentUser);
+    }
+
+    public void updateUserJoinedStudySessions(List<String> studySessionIds, User currentUser){
+        getUpdateUserParseQuery();
+        updateUserJoinedStudySessionsAsync(studySessionIds, currentUser);
     }
 
     public void saveDraftStudySessionAndUser(NavigationProvider navigationProvider) {
@@ -337,6 +378,10 @@ public class HomescreenActivity extends AppCompatActivity
                 TILE_SIZE * (0.5 + latLng.longitude / 360),
                 TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI))
         );
+    }
+
+    public List<String> getAllJoinedStudySessionIds() {
+        return allJoinedStudySessionIds;
     }
 
     public List<StudySession> getAllJoinedStudySessions() {
@@ -396,5 +441,14 @@ public class HomescreenActivity extends AppCompatActivity
         return selectedMarkerStudySessionId;
     }
 
-
+    public List<String> getListFromJsonArray(JSONArray jsonArray) throws JSONException {
+        List<String> list = new ArrayList<String>();
+        if (jsonArray == null) {
+            return null;
+        }
+        for(int i = 0; i < jsonArray.length(); i++){
+            list.add(jsonArray.getString(i));
+        }
+        return list;
+    }
 }

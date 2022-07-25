@@ -56,6 +56,20 @@ public class JoinedSessionsAdapter extends RecyclerView.Adapter<JoinedSessionsAd
         return studySessions.size();
     }
 
+    public void removeItem(int position) {
+        studySessions.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(StudySession studySession, int position) {
+        studySessions.add(position, studySession);
+        notifyItemInserted(position);
+    }
+
+    public List<StudySession> getData() {
+        return studySessions;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private FirebaseAuth mAuth;
 

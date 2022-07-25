@@ -1,9 +1,13 @@
 package com.example.capstone.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +22,9 @@ import com.example.capstone.R;
 import com.example.capstone.model.StudySession;
 import com.example.capstone.model.User;
 import com.example.capstone.activity.HomescreenActivity;
+import com.example.capstone.utils.SwipeToDeleteCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.parse.GetCallback;
@@ -38,10 +44,13 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView rvJoinedStudySessions;
     protected JoinedSessionsAdapter adapter;
+    private List<String> joinedStudySessionIds = new ArrayList<>();
 
     FloatingActionButton mAddFab, mStartSessionFab, mJoinSessionFab;
 
     TextView startSessionText, joinSessionText;
+
+    CoordinatorLayout homeCoordinatorLayout;
 
     Boolean isAllFabsVisible = false;
 
@@ -72,6 +81,7 @@ public class HomeFragment extends Fragment {
         startSessionText = getActivity().findViewById(R.id.start_session_text);
         joinSessionText = getActivity().findViewById(R.id.join_session_text);
         rvJoinedStudySessions = getActivity().findViewById(R.id.rv_joined_study_sessions);
+        homeCoordinatorLayout = getActivity().findViewById(R.id.homes_coordinator_layout);
 
         mStartSessionFab.setVisibility(View.GONE);
         mJoinSessionFab.setVisibility(View.GONE);
@@ -114,23 +124,52 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        adapter = new JoinedSessionsAdapter(getActivity(), getAllJoinedStudySessions());
+        adapter = new JoinedSessionsAdapter(getActivity(), getHomescreenActivity().getAllJoinedStudySessions());
 
         rvJoinedStudySessions.setAdapter(adapter);
         rvJoinedStudySessions.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         queryEachJoinedStudySessions();
+        enableSwipeToDeleteAndUndo();
     }
 
-    private List<String> getListFromJsonArray(JSONArray jsonArray) throws JSONException {
-        List<String> list = new ArrayList<String>();
-        if (jsonArray == null) {
-            return null;
-        }
-        for(int i = 0; i < jsonArray.length(); i++){
-            list.add(jsonArray.getString(i));
-        }
-        return list;
+    private void enableSwipeToDeleteAndUndo() {
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getActivity()) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                joinedStudySessionIds = getHomescreenActivity().getAllJoinedStudySessionIds();
+
+                final int position = viewHolder.getAdapterPosition();
+                final StudySession studySession = adapter.getData().get(position);
+
+                Log.i(TAG, "onSwipe session id " + studySession.getObjectId());
+
+                adapter.removeItem(position);
+                joinedStudySessionIds.remove(studySession.getObjectId());
+
+                Snackbar snackbar = Snackbar
+                        .make(homeCoordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                snackbar.setAnchorView(mAddFab);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        adapter.restoreItem(studySession, position);
+                        joinedStudySessionIds.add(studySession.getObjectId());
+
+                        getHomescreenActivity().updateUserJoinedStudySessions(joinedStudySessionIds, getHomescreenActivity().getCurrentUser());
+
+                        rvJoinedStudySessions.scrollToPosition(position);
+                    }
+                });
+                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.show();
+
+                getHomescreenActivity().updateUserJoinedStudySessions(joinedStudySessionIds, getHomescreenActivity().getCurrentUser());
+            }
+        };
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchhelper.attachToRecyclerView(rvJoinedStudySessions);
     }
 
     private ParseQuery<User> getUserJoinedStudySessionsQuery(){
@@ -153,8 +192,8 @@ public class HomeFragment extends Fragment {
         return query;
     }
 
-    private List<StudySession> getAllJoinedStudySessions (){
-        return ((HomescreenActivity) getActivity()).getAllJoinedStudySessions();
+    private HomescreenActivity getHomescreenActivity (){
+        return ((HomescreenActivity) getActivity());
     }
 
     private void queryEachJoinedStudySessions() {
@@ -163,15 +202,15 @@ public class HomeFragment extends Fragment {
             public void done(User user, ParseException e) {
                 if (e == null) {
                     try {
-                        List<String> joinedSessionIds = getListFromJsonArray(user.getJoinedSessions());
+                        List<String> joinedSessionIds = ((HomescreenActivity) getActivity()).getListFromJsonArray(user.getJoinedSessions());
                         if (joinedSessionIds == null) {
                             return;
                         }
                         ParseQuery<StudySession> studySessionQuery = getStudySessionQuery(joinedSessionIds);
 
                         List<StudySession> joinedStudySessions = studySessionQuery.find();
-                        getAllJoinedStudySessions().clear();
-                        getAllJoinedStudySessions().addAll(joinedStudySessions);
+                        getHomescreenActivity().getAllJoinedStudySessions().clear();
+                        getHomescreenActivity().getAllJoinedStudySessions().addAll(joinedStudySessions);
                         adapter.notifyDataSetChanged();
 
                     } catch (JSONException | ParseException ex) {
