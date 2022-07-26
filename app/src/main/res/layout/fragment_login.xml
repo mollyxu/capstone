@@ -32,21 +32,22 @@
         android:hint="password"
         android:inputType="textPassword" />
 
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/btn_facebook_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp" />
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Login"
-        android:textColor="@color/white"/>
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/btn_facebook_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btn_signup"

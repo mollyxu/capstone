@@ -3,6 +3,7 @@ package com.example.capstone.activity;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -10,11 +11,14 @@ import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -42,6 +46,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -115,9 +120,31 @@ public class HomescreenActivity extends AppCompatActivity
                 }
             }
         });
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.mi_logout) {
+            FirebaseAuth.getInstance().signOut();
+            navigateToLogin();
+            Log.i(TAG, "logging out");
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    private void navigateToLogin(){
+        Intent navigateToLogin = new Intent(this, AuthenticationActivity.class);
+        navigateToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        navigateToLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(navigateToLogin);
     }
 
     private ParseQuery<User> getCurrentUserQuery(){

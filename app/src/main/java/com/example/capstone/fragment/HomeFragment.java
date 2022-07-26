@@ -88,16 +88,6 @@ public class HomeFragment extends Fragment {
         rvJoinedStudySessions = getActivity().findViewById(R.id.rv_joined_study_sessions);
         homeCoordinatorLayout = getActivity().findViewById(R.id.homes_coordinator_layout);
 
-        btnLogout = getActivity().findViewById(R.id.btn_logout);
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                navigateToLogin();
-            }
-        });
-
         mStartSessionFab.setVisibility(View.GONE);
         mJoinSessionFab.setVisibility(View.GONE);
         startSessionText.setVisibility(View.GONE);
