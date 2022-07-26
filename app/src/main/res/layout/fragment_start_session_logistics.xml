@@ -72,4 +72,13 @@
         android:layout_weight="1"
         android:text="Next"
         android:textColor="@color/white"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="match_parent"
+        android:layout_height="374dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/study"
+        android:layout_marginTop="24dp"/>
 </LinearLayout>
