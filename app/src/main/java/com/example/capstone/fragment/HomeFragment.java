@@ -1,5 +1,6 @@
 package com.example.capstone.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -15,8 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.capstone.activity.AuthenticationActivity;
 import com.example.capstone.adapter.JoinedSessionsAdapter;
 import com.example.capstone.R;
 import com.example.capstone.model.StudySession;
@@ -47,6 +50,8 @@ public class HomeFragment extends Fragment {
     private List<String> joinedStudySessionIds = new ArrayList<>();
 
     FloatingActionButton mAddFab, mStartSessionFab, mJoinSessionFab;
+
+    Button btnLogout;
 
     TextView startSessionText, joinSessionText;
 
@@ -82,6 +87,16 @@ public class HomeFragment extends Fragment {
         joinSessionText = getActivity().findViewById(R.id.join_session_text);
         rvJoinedStudySessions = getActivity().findViewById(R.id.rv_joined_study_sessions);
         homeCoordinatorLayout = getActivity().findViewById(R.id.homes_coordinator_layout);
+
+        btnLogout = getActivity().findViewById(R.id.btn_logout);
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                navigateToLogin();
+            }
+        });
 
         mStartSessionFab.setVisibility(View.GONE);
         mJoinSessionFab.setVisibility(View.GONE);
@@ -221,5 +236,12 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void navigateToLogin(){
+        Intent navigateToLogin = new Intent(getActivity(), AuthenticationActivity.class);
+        navigateToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        navigateToLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(navigateToLogin);
     }
 }
