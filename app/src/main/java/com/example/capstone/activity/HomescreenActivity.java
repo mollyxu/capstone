@@ -85,7 +85,6 @@ public class HomescreenActivity extends AppCompatActivity
 
     private User currentUser;
 
-    private Location currentLocation;
     private LatLng currentLatLng;
     private LatLng selectedLatLng;
 
@@ -112,6 +111,11 @@ public class HomescreenActivity extends AppCompatActivity
         getCurrentUserQuery().getFirstInBackground(new GetCallback<User>() {
             @Override
             public void done(User user, ParseException e) {
+                if (user == null) {
+                    Log.e(TAG, "user is null");
+                } else {
+                    Log.e(TAG, "user is NOT null");
+                }
                 currentUser = user;
                 try {
                     allJoinedStudySessionIds = getListFromJsonArray(user.getJoinedSessions());
@@ -212,20 +216,24 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     @SuppressLint("MissingPermission")
+    private void saveCurrentLatLng(){
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            Log.i(TAG, "curr lat: " + currentLatLng);
+                        }
+                    }
+                });
+    }
+
+    @SuppressLint("MissingPermission")
     private void enableMyLocation() {
         if (isUserGrantedPermission()) {
             map.setMyLocationEnabled(true);
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                currentLocation = location;
-                                currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                                Log.i(TAG, "curr lat: " + currentLatLng);
-                            }
-                        }
-                    });
+            saveCurrentLatLng();
             return;
         }
 
@@ -234,12 +242,14 @@ public class HomescreenActivity extends AppCompatActivity
 
     @Override
     public boolean onMyLocationButtonClick() {
+        saveCurrentLatLng();
         Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         return false;
     }
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
+        saveCurrentLatLng();
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 

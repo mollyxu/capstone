@@ -138,6 +138,25 @@ public class HomeFragment extends Fragment {
         enableSwipeToDeleteAndUndo();
     }
 
+    private void showUndoSwipeToDelete(StudySession studySession, int position){
+        Snackbar snackbar = Snackbar.make(homeCoordinatorLayout, "Left study session", Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(mAddFab);
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.restoreItem(studySession, position);
+                joinedStudySessionIds.add(studySession.getObjectId());
+
+                getHomescreenActivity().updateUserJoinedStudySessions(joinedStudySessionIds, getHomescreenActivity().getCurrentUser());
+
+                rvJoinedStudySessions.scrollToPosition(position);
+
+                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.show();
+            }
+        });
+    }
+
     private void enableSwipeToDeleteAndUndo() {
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getActivity()) {
             @Override
@@ -152,24 +171,9 @@ public class HomeFragment extends Fragment {
                 adapter.removeItem(position);
                 joinedStudySessionIds.remove(studySession.getObjectId());
 
-                Snackbar snackbar = Snackbar
-                        .make(homeCoordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-                snackbar.setAnchorView(mAddFab);
-                snackbar.setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        adapter.restoreItem(studySession, position);
-                        joinedStudySessionIds.add(studySession.getObjectId());
-
-                        getHomescreenActivity().updateUserJoinedStudySessions(joinedStudySessionIds, getHomescreenActivity().getCurrentUser());
-
-                        rvJoinedStudySessions.scrollToPosition(position);
-                    }
-                });
-                snackbar.setActionTextColor(Color.YELLOW);
-                snackbar.show();
-
                 getHomescreenActivity().updateUserJoinedStudySessions(joinedStudySessionIds, getHomescreenActivity().getCurrentUser());
+
+                showUndoSwipeToDelete(studySession, position);
             }
         };
 
